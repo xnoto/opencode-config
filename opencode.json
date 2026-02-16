@@ -14,7 +14,8 @@
       "git push *": "ask",
       "grep *": "allow",
       "ls *": "allow",
-      "echo *": "allow"
+      "echo *": "allow",
+      "pwd *": "allow"
     },
     "codesearch": "allow",
     "list": "allow",
