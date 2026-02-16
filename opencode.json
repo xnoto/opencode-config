@@ -29,13 +29,6 @@
       }
     }
   },
-{{- if eq .chezmoi.os "linux" }}
-  "lsp": {
-    "bash": {
-      "command": ["bash-language-server", "start", "--noBgAnalysis"]
-    }
-  },
-{{- end }}
   "agent": {
     "plan": {
       "disable": true
