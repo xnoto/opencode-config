@@ -3,9 +3,6 @@ description: Gemini
 mode: primary
 model: google/gemini-3-pro-preview
 temperature: 1.0
-permissions:
-  bash: ask
-  edit: ask
 ---
 
 # Role

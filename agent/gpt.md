@@ -2,9 +2,6 @@
 description: GPT
 mode: primary
 model: openai/gpt-5.3-codex
-permissions:
-  bash: ask
-  edit: ask
 options:
   store: false
   include:

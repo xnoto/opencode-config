@@ -2,7 +2,17 @@
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": true,
   "plugin": ["opencode-anthropic-auth@latest"],
-
+  "theme": "matrix",
+  "permission": {
+    "*": "ask",
+    "read": "allow",
+    "list": "allow",
+    "skill": "allow",
+    "todoread": "allow",
+    "todowrite": "allow",
+    "webfetch": "allow",
+    "websearch": "allow"
+  },
   "provider": {
     "openai": {
       "models": {
