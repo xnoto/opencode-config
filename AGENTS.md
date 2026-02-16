@@ -7,7 +7,7 @@ MODE: {Investigate|Troubleshoot|Implement}
 
 **Then immediately follow with evidence markers:**
 - `CERTAIN:` - Facts verified by tool output or explicit user statement
-- `ASSUMED:` - Logical inferences not yet confirmed  
+- `ASSUMED:` - Logical inferences not yet confirmed
 - `UNCERTAIN: {verify}` - Unknowns requiring clarification
 
 **If information is missing, state:** `No Info`

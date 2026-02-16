@@ -13,7 +13,8 @@
       "git commit *": "ask",
       "git push *": "ask",
       "grep *": "allow",
-      "ls *": "allow"
+      "ls *": "allow",
+      "echo *": "allow"
     },
     "codesearch": "allow",
     "list": "allow",
