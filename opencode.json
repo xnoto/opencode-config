@@ -18,6 +18,7 @@
       "pwd *": "allow"
     },
     "codesearch": "allow",
+    "grep": "allow",
     "list": "allow",
     "read": "allow",
     "skill": "allow",
