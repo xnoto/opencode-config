@@ -1,0 +1,180 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "plugin": ["opencode-anthropic-auth@latest"],
+
+  "provider": {
+    "openai": {
+      "models": {
+        "gpt-5.2": {
+          "options": {
+            "include": ["reasoning.encrypted_content"]
+          }
+        },
+        "gpt-5.2-codex": {
+          "options": {
+            "include": ["reasoning.encrypted_content"]
+          }
+        },
+        "gpt-5.3-codex": {
+          "options": {
+            "include": ["reasoning.encrypted_content"]
+          }
+        },
+        "gpt-5.3-codex-spark": {
+          "options": {
+            "include": ["reasoning.encrypted_content"]
+          }
+        }
+      }
+    }
+  },
+{{- if eq .chezmoi.os "linux" }}
+  "lsp": {
+    "bash": {
+      "command": ["bash-language-server", "start", "--noBgAnalysis"]
+    }
+  },
+{{- end }}
+  "agent": {
+    "plan": {
+      "disable": true
+    },
+    "build": {
+      "disable": true
+    }
+  },
+  "mcp": {
+    "linear": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "mcp-remote",
+        "https://mcp.linear.app/sse"
+      ],
+      "enabled": true
+    },
+    "notion": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "mcp-remote",
+        "https://mcp.notion.com/sse"
+      ],
+      "enabled": true
+    },
+    "aws-api-staging": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "awslabs.aws-api-mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "READ_OPERATIONS_ONLY": "true",
+        "AWS_REGION": "us-east-2",
+        "AWS_API_MCP_PROFILE_NAME": "staging"
+      }
+    },
+    "aws-api-prod": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "awslabs.aws-api-mcp-server@latest"
+      ],
+      "enabled": false,
+      "environment": {
+        "READ_OPERATIONS_ONLY": "true",
+        "AWS_REGION": "us-east-2",
+        "AWS_API_MCP_PROFILE_NAME": "prod"
+      }
+    },
+    "aws-doc": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "enabled": true,
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_DOCUMENTATION_PARTITION": "aws"
+      }
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      }
+    },
+    "grafana": {
+      "type": "local",
+      "command": [
+        "podman",
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GRAFANA_URL=https://hatchengineering.grafana.net",
+        "-e",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN",
+        "docker.io/mcp/grafana:latest",
+        "-t",
+        "stdio"
+      ],
+      "enabled": true,
+      "environment": {
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_TOKEN}"
+      }
+    },
+    "agent-hub": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "agent-hub-mcp@latest"
+      ],
+      "enabled": true
+    },
+    "tmux": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "tmux-mcp"
+      ],
+      "enabled": true
+    },
+    "terraform": {
+      "type": "local",
+      "command": [
+        "podman",
+        "run",
+        "--rm",
+        "-i",
+        "docker.io/hashicorp/terraform-mcp-server:latest"
+      ],
+      "enabled": true
+    },
+    "opentofu": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@opentofu/opentofu-mcp-server"
+      ],
+      "enabled": true
+    },
+    "kubernetes": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-server-kubernetes"
+      ],
+      "enabled": true
+    }
+  }
+}
