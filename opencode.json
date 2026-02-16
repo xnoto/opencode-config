@@ -3,6 +3,7 @@
   "autoupdate": true,
   "plugin": ["opencode-anthropic-auth@latest"],
   "permission": {
+    "*": "ask",
     "bash": {
       "*": "ask",
       "gh run list *": "allow",
@@ -21,8 +22,7 @@
     "todoread": "allow",
     "todowrite": "allow",
     "webfetch": "allow",
-    "websearch": "allow",
-    "*": "ask"
+    "websearch": "allow"
   },
   "provider": {
     "openai": {
