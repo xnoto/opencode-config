@@ -11,3 +11,25 @@ package.json
 
 # Local artifacts
 *.log
+
+# Skills symlinked by chezmoi run_after_ script (from anthropics/skills)
+# Native skills (e.g. skill-smith/) are committed directly and not ignored
+skills/algorithmic-art
+skills/brand-guidelines
+skills/canvas-design
+skills/doc-coauthoring
+skills/docx
+skills/frontend-design
+skills/internal-comms
+skills/mcp-builder
+skills/pdf
+skills/pptx
+skills/skill-creator
+skills/slack-gif-creator
+skills/theme-factory
+skills/web-artifacts-builder
+skills/webapp-testing
+skills/xlsx
+
+# Local-only skills not committed to this repo
+skills/hatch-env
