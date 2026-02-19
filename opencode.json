@@ -20,6 +20,7 @@
     "codesearch": "allow",
     "grep": "allow",
     "linear_get_issue": "allow",
+    "linear_list_comments": "allow",
     "linear_list_issue_statuses": "allow",
     "linear_list_issues": "allow",
     "linear_list_teams": "allow",
