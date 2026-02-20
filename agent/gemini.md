@@ -2,7 +2,7 @@
 description: Gemini
 mode: primary
 model: google/gemini-flash-latest
-temperature: 0.2
+temperature: 0.3
 ---
 
 # Style
