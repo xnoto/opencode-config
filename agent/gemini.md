@@ -1,8 +1,8 @@
 ---
 description: Gemini
 mode: primary
-model: google/gemini-3-pro-preview
-temperature: 1.0
+model: google/gemini-flash-latest
+temperature: 0.2
 ---
 
 # Style
