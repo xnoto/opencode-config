@@ -28,6 +28,7 @@
     "linear_list_issues": "allow",
     "linear_list_teams": "allow",
     "list": "allow",
+    "notion_notion-fetch": "allow",
     "notion_notion-search": "allow",
     "read": "allow",
     "skill": "allow",
