@@ -64,7 +64,11 @@
       }
     },
     "ollama": {
-      "api": "https://ollama.apps.makeitwork.cloud",
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "https://ollama.apps.makeitwork.cloud/v1"
+      },
       "models": {
         "deepseek-coder-v2:16b": {
           "options": {
