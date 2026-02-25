@@ -65,17 +65,6 @@
           }
         }
       }
-    },
-    "ollama": {
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "https://ollama.apps.makeitwork.cloud/v1"
-      },
-      "models": {
-        "deepseek-coder-v2:16b": {
-          "tools": false
-        }
-      }
     }
   },
   "agent": {
