@@ -62,6 +62,16 @@
           }
         }
       }
+    },
+    "ollama": {
+      "url": "https://ollama.apps.makeitwork.cloud",
+      "models": {
+        "deepseek-coder-v2:16b": {
+          "options": {
+            "num_ctx": 32768
+          }
+        }
+      }
     }
   },
   "agent": {
