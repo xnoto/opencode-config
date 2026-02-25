@@ -78,6 +78,9 @@
         },
         "qwen2.5-coder:14b": {
           "tools": true
+        },
+        "qwen2.5-coder:7b": {
+          "tools": true
         }
       }
     }
