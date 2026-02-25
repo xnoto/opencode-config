@@ -65,24 +65,15 @@
     },
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama (local)",
       "options": {
-        "baseURL": "https://ollama.apps.makeitwork.cloud/v1/"
+        "baseURL": "https://ollama.apps.makeitwork.cloud/v1"
       },
       "models": {
         "deepseek-coder-v2:16b": {
-          "name": "DeepSeek Coder V2 16B",
-          "tool_call": true,
-          "options": {
-            "num_ctx": 32768
-          }
+          "tools": true
         },
         "qwen2.5-coder:14b": {
-          "name": "Qwen 2.5 Coder 14B",
-          "tool_call": true,
-          "options": {
-            "num_ctx": 32768
-          }
+          "tools": true
         }
       }
     }
