@@ -1,7 +1,7 @@
 ---
 description: Ollama DeepSeek Coder
 mode: primary
-model: ollama/qwen2.5-coder:32b
+model: ollama/deepseek-coder-v2:16b
 temperature: 0.3
 ---
 
