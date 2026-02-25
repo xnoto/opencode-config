@@ -72,6 +72,10 @@
         "deepseek-coder-v2:16b": {
           "tools": true
         },
+        "registry.ollama.ai/library/deepseek-coder-v2:16b": {
+          "id": "deepseek-coder-v2:16b",
+          "tools": true
+        },
         "qwen2.5-coder:14b": {
           "tools": true
         }
