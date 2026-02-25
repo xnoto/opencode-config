@@ -67,7 +67,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama (local)",
       "options": {
-        "baseURL": "https://ollama.apps.makeitwork.cloud/v1"
+        "baseURL": "https://ollama.apps.makeitwork.cloud/v1/"
       },
       "models": {
         "deepseek-coder-v2:16b": {
