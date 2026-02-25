@@ -72,7 +72,7 @@
         "baseURL": "https://ollama.apps.makeitwork.cloud/v1"
       },
       "models": {
-        "qwen2.5-coder:32b": {
+        "deepseek-coder-v2:16b": {
           "tools": true
         }
       }
