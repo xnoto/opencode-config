@@ -64,7 +64,7 @@
       }
     },
     "ollama": {
-      "url": "https://ollama.apps.makeitwork.cloud",
+      "api": "https://ollama.apps.makeitwork.cloud",
       "models": {
         "deepseek-coder-v2:16b": {
           "options": {
