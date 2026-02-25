@@ -69,17 +69,7 @@
         "baseURL": "https://ollama.apps.makeitwork.cloud/v1"
       },
       "models": {
-        "deepseek-coder-v2:16b": {
-          "tools": true
-        },
-        "registry.ollama.ai/library/deepseek-coder-v2:16b": {
-          "id": "deepseek-coder-v2:16b",
-          "tools": true
-        },
-        "qwen2.5-coder:14b": {
-          "tools": true
-        },
-        "qwen2.5-coder:7b": {
+        "qwen2.5-coder:32b": {
           "tools": true
         }
       }
