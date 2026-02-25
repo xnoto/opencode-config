@@ -73,7 +73,7 @@
       },
       "models": {
         "deepseek-coder-v2:16b": {
-          "tools": true
+          "tools": false
         }
       }
     }
