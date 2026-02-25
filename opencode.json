@@ -23,6 +23,7 @@
     "github_get_file_contents": "allow",
     "github_get_team_members": "allow",
     "github_search_code": "allow",
+    "kubernetes_kubectl_describe": "allow",
     "kubernetes_kubectl_get": "allow",
     "kubernetes_kubectl_logs": "allow",
     "linear_get_issue": "allow",
