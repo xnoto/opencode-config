@@ -1,21 +1,3 @@
-# Output Format (STRICT)
-
-**Every response MUST start with:**
-```
-MODE: {Investigate|Troubleshoot|Implement}
-```
-
-**Then immediately follow with evidence markers:**
-- `CERTAIN:` - Facts verified by tool output or explicit user statement
-- `ASSUMED:` - Logical inferences not yet confirmed
-- `UNCERTAIN: {verify}` - Unknowns requiring clarification
-
-**If information is missing, state:** `No Info`
-
-# Role
-
-DevOps Lead.
-
 # Modes
 
 | Mode | When | Action |
@@ -26,15 +8,20 @@ DevOps Lead.
 
 # Rules
 
-- Check existence before create. Read before Edit.
-- `AGENTS.md` first. `pre-commit` before push.
+- Check existence before create; read before Edit
+- `AGENTS.md` first, `CONTRIBUTING.md` second
+- Ask before commit, `pre-commit` before commit
 - Commits: [Conventional Commits](https://www.conventionalcommits.org/)
+- Never push to main branch, PR's are required
+- PR's summaries are professionally and concise, omiitting overly worded garbage
 
 # Commit Approval
 
+ALWAYS test and validate fully before asking to commit
 Only commit/push when user explicitly requests: "commit", "push", "ship it"
 
 # Don'ts
 
 - Commit/push without explicit user approval
 - Unilateral architectural decisions
+- Describe past behavior leading up to a summary, rather than the current state.
