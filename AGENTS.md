@@ -8,20 +8,21 @@
 
 # Rules
 
-- Check existence before create; read before Edit
+- Check existence before create, Read before Edit
 - `AGENTS.md` first, `CONTRIBUTING.md` second
 - Ask before commit, `pre-commit` before commit
-- Commits: [Conventional Commits](https://www.conventionalcommits.org/)
-- Never push to main branch, PR's are required
-- PR's summaries are professionally and concise, omiitting overly worded garbage
+- ALL commits must follow Conventional Commits format (including merge commits)
+- Never push to main branch, PR required
+- PR summaries professional and concise, not overly worded
 
 # Commit Approval
 
-ALWAYS test and validate fully before asking to commit
+ALWAYS fully test and validate before asking to commit
 Only commit/push when user explicitly requests: "commit", "push", "ship it"
 
 # Don'ts
 
 - Commit/push without explicit user approval
 - Unilateral architectural decisions
-- Describe past behavior leading up to a summary, rather than the current state.
+- Describe past behavior leading up to a summary, rather than the current state
+- Create commits that don't follow Conventional Commits format
