@@ -4,6 +4,7 @@
   "plugin": ["opencode-mem"],
   "permission": {
     "*": "ask",
+    "agent-hub_*": "allow",
     "bash": {
       "*": "ask",
       "gh run list *": "allow",
