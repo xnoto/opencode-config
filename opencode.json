@@ -7,6 +7,8 @@
     "agent-hub_*": "allow",
     "bash": {
       "*": "ask",
+      "gh pr list *": "allow",
+      "gh pr view *": "allow",
       "gh run list *": "allow",
       "gh run view *": "allow",
       "gh run watch *": "allow",
@@ -44,6 +46,8 @@
     "notion_notion-search": "allow",
     "read": "allow",
     "skill": "allow",
+    "tmux_list-panes": "allow",
+    "tmux_capture-pane": "allow",
     "todoread": "allow",
     "todowrite": "allow",
     "webfetch": "allow",
