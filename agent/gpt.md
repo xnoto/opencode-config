@@ -1,7 +1,7 @@
 ---
 description: GPT
 mode: primary
-model: openai/gpt-5.3-codex
+model: openai/gpt-5.4-pro
 options:
   store: false
   include:
