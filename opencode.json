@@ -1,7 +1,7 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": true,
-  "plugin": ["opencode-mem"],
+  "plugin": ["opencode-mem", "context-mode"],
   "permission": {
     "*": "ask",
     "agent-hub_*": "allow",
@@ -53,35 +53,20 @@
     "webfetch": "allow",
     "websearch": "allow"
   },
-  "provider": {
-    "openai": {
-      "models": {
-        "gpt-5.2": {},
-        "gpt-5.2-codex": {},
-        "gpt-5.3-codex": {},
-        "gpt-5.3-codex-spark": {}
-      }
-    }
-  },
-  "tools": {
-    "opentofu_*": false
-  },
   "agent": {
     "plan": {
       "disable": true
     },
     "build": {
       "disable": true
-    },
-    "makeitwork": {
-      "mode": "primary",
-      "model": "kimi-for-coding/k2p5",
-      "tools": {
-        "opentofu_*": true
-      }
     }
   },
   "mcp": {
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"],
+      "enabled": true
+    },
     "linear": {
       "type": "local",
       "command": [
@@ -202,7 +187,7 @@
         "-y",
         "@opentofu/opentofu-mcp-server"
       ],
-      "enabled": true
+      "enabled": false
     },
     "kubernetes": {
       "type": "local",
