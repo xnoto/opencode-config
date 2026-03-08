@@ -56,28 +56,15 @@
   "provider": {
     "openai": {
       "models": {
-        "gpt-5.2": {
-          "options": {
-            "include": ["reasoning.encrypted_content"]
-          }
-        },
-        "gpt-5.2-codex": {
-          "options": {
-            "include": ["reasoning.encrypted_content"]
-          }
-        },
-        "gpt-5.3-codex": {
-          "options": {
-            "include": ["reasoning.encrypted_content"]
-          }
-        },
-        "gpt-5.3-codex-spark": {
-          "options": {
-            "include": ["reasoning.encrypted_content"]
-          }
-        }
+        "gpt-5.2": {},
+        "gpt-5.2-codex": {},
+        "gpt-5.3-codex": {},
+        "gpt-5.3-codex-spark": {}
       }
     }
+  },
+  "tools": {
+    "opentofu_*": false
   },
   "agent": {
     "plan": {
@@ -85,6 +72,13 @@
     },
     "build": {
       "disable": true
+    },
+    "makeitwork": {
+      "mode": "primary",
+      "model": "kimi-for-coding/k2p5",
+      "tools": {
+        "opentofu_*": true
+      }
     }
   },
   "mcp": {
@@ -95,7 +89,7 @@
         "mcp-remote",
         "https://mcp.linear.app/sse"
       ],
-      "enabled": true
+      "enabled": false
     },
     "notion": {
       "type": "local",
@@ -104,7 +98,7 @@
         "mcp-remote",
         "https://mcp.notion.com/sse"
       ],
-      "enabled": true
+      "enabled": false
     },
     "aws-api-staging": {
       "type": "local",
@@ -112,7 +106,7 @@
         "uvx",
         "awslabs.aws-api-mcp-server@latest"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "READ_OPERATIONS_ONLY": "true",
         "AWS_REGION": "us-east-2",
@@ -138,7 +132,7 @@
         "uvx",
         "awslabs.aws-documentation-mcp-server@latest"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_DOCUMENTATION_PARTITION": "aws"
@@ -167,7 +161,7 @@
         "-t",
         "stdio"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_TOKEN}"
       }
@@ -199,7 +193,7 @@
         "-i",
         "docker.io/hashicorp/terraform-mcp-server:latest"
       ],
-      "enabled": true
+      "enabled": false
     },
     "opentofu": {
       "type": "local",
@@ -217,7 +211,7 @@
         "-y",
         "mcp-server-kubernetes"
       ],
-      "enabled": true
+      "enabled": false
     }
   }
 }
