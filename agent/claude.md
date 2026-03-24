@@ -91,11 +91,14 @@ When asked for a review, adopt a code review mindset:
 
 ## Limits
 
-This file externalizes the effective instruction set of a Claude Code CLI session. The following aspects of runtime behavior cannot be fully reproduced in a repo-local file:
+This file is one layer in a multi-layer instruction stack. The effective behavior of a session is the combination of this file, `AGENTS.md` routing rules, platform-injected system prompts, MCP server configurations, and the underlying model. The following aspects of runtime behavior cannot be fully reproduced here:
 
-- **System prompt and platform policies.** Claude Code receives detailed system instructions at session start that govern safety boundaries, tool routing, output constraints, and behavioral defaults. These are not user-configurable.
-- **Tool availability and permissions.** The exact set of available tools (MCP servers, built-in tools, hooks) depends on the user's configuration and permission mode. Tool calls may require interactive approval.
-- **Context management.** Automatic conversation compression, context window limits, and the interplay between hooks and tool results are runtime behaviors.
-- **Memory system.** Claude Code maintains a persistent file-based memory across sessions. The memory read/write logic and its influence on responses depend on the runtime environment.
-- **Hook system.** Shell-based hooks can intercept tool calls and inject context. Their behavior is defined in settings files, not in the agent definition.
+- **System prompt and platform policies.** The platform injects detailed instructions at session start covering safety boundaries, git commit protocol, PR workflows, output formatting, and behavioral defaults. These override or extend anything in this file and are not user-configurable.
+- **Tool availability and permissions.** The exact set of available tools depends on MCP server configuration and permission mode. A typical session includes built-in tools (Read, Edit, Glob, Grep, Bash, Write), GitHub tools, tmux tools, and additional MCP servers. Tool calls may require interactive approval.
+- **Context-mode routing.** `AGENTS.md` defines mandatory routing rules that intercept and redirect tool calls to protect the context window. This includes blocking shell commands (`curl`, `wget`, inline HTTP), redirecting large-output operations to sandboxed execution, and enforcing a tool selection hierarchy. This layer fundamentally shapes how tools are used in practice.
+- **Context management.** Automatic conversation compression, context window limits, and output truncation are runtime behaviors outside this file's control.
+- **Memory system.** An MCP-based memory tool provides structured persistent storage with tagging, search, and profile modes across sessions. Its behavior depends on the MCP server configuration, not this file.
+- **Skills system.** Loadable skill modules provide domain-specific instructions and workflows (e.g., deployment runbooks, document generation, frontend design). Skills are discovered and loaded at runtime via an MCP tool and inject detailed instructions into context on demand.
+- **Subagent system.** A task tool can launch specialized subagents (explore, general, minimax, bullshit-detector) for parallel research, broad codebase exploration, or delegated work. Subagent availability and capabilities are runtime-dependent.
+- **Agent hub.** Multi-agent collaboration tools allow registration, messaging, feature planning, and task delegation across concurrent agent sessions. This capability is entirely external to this file.
 - **Model capabilities.** Reasoning depth, knowledge cutoff, multimodal understanding, and token limits are properties of the underlying model, not this file.
