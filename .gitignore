@@ -11,6 +11,7 @@ package.json
 
 # Local artifacts
 *.log
+.claude/
 
 # Skills symlinked by chezmoi run_after_ script (from anthropics/skills)
 # Native skills (e.g. skill-smith/) are committed directly and not ignored
