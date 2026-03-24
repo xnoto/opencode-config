@@ -232,6 +232,34 @@
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "enabled": true
+    },
+    "argocd-staging": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "argocd-mcp@latest",
+        "stdio"
+      ],
+      "enabled": true,
+      "environment": {
+        "ARGOCD_BASE_URL": "https://argocd-staging.angler-elver.ts.net",
+        "ARGOCD_API_TOKEN": "{env:ARGOCD_STAGING_TOKEN}"
+      }
+    },
+    "argocd-prod": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "argocd-mcp@latest",
+        "stdio"
+      ],
+      "enabled": true,
+      "environment": {
+        "ARGOCD_BASE_URL": "https://argocd-prod.angler-elver.ts.net",
+        "ARGOCD_API_TOKEN": "{env:ARGOCD_PROD_TOKEN}"
+      }
     }
   }
 }
