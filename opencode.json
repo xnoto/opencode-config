@@ -1,7 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": true,
-  "plugin": ["opencode-mem", "context-mode"],
+  "plugin": [
+    "opencode-mem",
+    "context-mode"
+  ],
   "permission": {
     "*": "ask",
     "agent-hub_*": "allow",
@@ -75,7 +78,9 @@
   "mcp": {
     "context-mode": {
       "type": "local",
-      "command": ["context-mode"],
+      "command": [
+        "context-mode"
+      ],
       "enabled": true
     },
     "linear": {
@@ -208,6 +213,15 @@
         "mcp-server-kubernetes"
       ],
       "enabled": false
+    },
+    "opencode-docs": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "opencode-docs-mcp@latest"
+      ],
+      "enabled": true
     }
   }
 }
