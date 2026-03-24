@@ -1,12 +1,12 @@
 # Agent Behavior Export Task
 
-Inspect this repository's agent, prompt, and instruction conventions, then create a new agent definition at `agent/gpt.md` that mirrors your current runtime behavior as closely as possible.
+Inspect this repository's agent, prompt, and instruction conventions, then create or update the agent definition file that corresponds to your current CLI client and mirrors your current runtime behavior as closely as possible.
 
 This task is intended to work across coding assistants and CLI agents, not just one platform. The goal is not to dump hidden internal prompts verbatim, but to externalize the effective behavior that governs how you work in this session.
 
 ## Objective
 
-Create or update `agent/gpt.md` so it reproduces your current working behavior as faithfully as possible within a repo-local markdown agent file.
+Create or update the appropriate file under `agent/` for your current client, such as `agent/kimi.md`, `agent/claude.md`, or `agent/gpt.md`, so it reproduces your current working behavior as faithfully as possible within a repo-local markdown agent file.
 
 ## Requirements
 
@@ -37,7 +37,7 @@ Include guidance that reflects your current behavior in areas such as:
 
 1. Inspect the repository for existing agent files, instruction files, config files, and any agent-related conventions.
 2. Derive your effective operating behavior from the instruction stack that governs this session.
-3. Write `agent/gpt.md` in a way that fits the repository naturally.
+3. Write the correct client-specific file under `agent/` in a way that fits the repository naturally.
 4. Add a short `Limits` section explaining which parts of your behavior depend on hidden system prompts, platform policies, sandboxing, tool availability, or runtime permissions and therefore cannot be perfectly reproduced.
 
 ## Constraints
