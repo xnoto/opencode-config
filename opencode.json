@@ -18,7 +18,8 @@
       "grep *": "allow",
       "ls *": "allow",
       "echo *": "allow",
-      "pwd *": "allow"
+      "pwd *": "allow",
+      "pre-commit *": "allow"
     },
     "codesearch": "allow",
     "grep": "allow",
