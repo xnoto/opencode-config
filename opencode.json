@@ -35,6 +35,7 @@
     "github_get_file_contents": "allow",
     "github_get_team_members": "allow",
     "github_search_code": "allow",
+    "github_search_repositories": "allow",
     "grafana_get_dashboard_panel_queries": "allow",
     "grafana_get_dashboard_property": "allow",
     "grafana_get_dashboard_summary": "allow",
