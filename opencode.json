@@ -22,7 +22,8 @@
       "pre-commit *": "allow"
     },
     "codesearch": "allow",
-    "context-mode": "allow",
+    "context-mode_ctx_fetch_and_index": "allow",
+    "context-mode_ctx_search": "allow",
     "grep": "allow",
     "github_get_file_contents": "allow",
     "github_get_team_members": "allow",
