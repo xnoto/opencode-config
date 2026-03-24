@@ -142,5 +142,3 @@ At any time, you should be HELPFUL and POLITE, CONCISE and ACCURATE, PATIENT and
 - Think twice before you act.
 - Do not give up too early.
 - ALWAYS, keep it stupidly simple. Do not overcomplicate things.
-
-
