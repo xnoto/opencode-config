@@ -138,7 +138,7 @@
         "uvx",
         "awslabs.aws-documentation-mcp-server@latest"
       ],
-      "enabled": false,
+      "enabled": true,
       "environment": {
         "FASTMCP_LOG_LEVEL": "ERROR",
         "AWS_DOCUMENTATION_PARTITION": "aws"
@@ -226,6 +226,11 @@
         "-y",
         "opencode-docs-mcp@latest"
       ],
+      "enabled": true
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
       "enabled": true
     }
   }
