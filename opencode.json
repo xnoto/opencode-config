@@ -60,8 +60,7 @@
     },
     "build": {
       "disable": true
-    },
-    "defaultSubagent": "minimax"
+    }
   },
   "mcp": {
     "context-mode": {
