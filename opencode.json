@@ -24,16 +24,10 @@
       "pwd *": "allow",
       "pre-commit *": "allow"
     },
-    "context-mode_ctx_batch_execute": "allow",
-    "context-mode_ctx_doctor": "allow",
-    "context-mode_ctx_execute": "allow",
-    "context-mode_ctx_execute_file": "allow",
+    "aws-doc_*": "allow",
     "codesearch": "allow",
-    "context-mode_ctx_fetch_and_index": "allow",
-    "context-mode_ctx_index": "allow",
-    "context-mode_ctx_search": "allow",
-    "context-mode_ctx_stats": "allow",
-    "context-mode_ctx_upgrade": "allow",
+    "context7_*": "allow",
+    "context-mode_*": "allow",
     "grep": "allow",
     "github_get_file_contents": "allow",
     "github_get_team_members": "allow",
@@ -58,13 +52,11 @@
     "list": "allow",
     "notion_notion-fetch": "allow",
     "notion_notion-search": "allow",
-    "opencode-docs_browse_opencode_docs": "allow",
-    "opencode-docs_get_opencode_doc_page": "allow",
-    "opencode-docs_list_opencode_doc_categories": "allow",
-    "opencode-docs_list_opencode_docs_by_category": "allow",
-    "opencode-docs_search_opencode_docs": "allow",
+    "opencode-docs_*": "allow",
+    "opentofu-docs_*": "allow",
     "read": "allow",
     "skill": "allow",
+    "terraform-docs_*": "allow",
     "tmux_list-panes": "allow",
     "tmux_capture-pane": "allow",
     "todoread": "allow",
@@ -190,7 +182,7 @@
       ],
       "enabled": true
     },
-    "terraform": {
+    "terraform-docs": {
       "type": "local",
       "command": [
         "podman",
@@ -199,16 +191,16 @@
         "-i",
         "docker.io/hashicorp/terraform-mcp-server:latest"
       ],
-      "enabled": false
+      "enabled": true
     },
-    "opentofu": {
+    "opentofu-docs": {
       "type": "local",
       "command": [
         "npx",
         "-y",
         "@opentofu/opentofu-mcp-server"
       ],
-      "enabled": false
+      "enabled": true
     },
     "kubernetes": {
       "type": "local",
@@ -241,7 +233,7 @@
         "argocd-mcp@latest",
         "stdio"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "ARGOCD_BASE_URL": "https://argocd-staging.angler-elver.ts.net",
         "ARGOCD_API_TOKEN": "{env:ARGOCD_STAGING_TOKEN}"
@@ -255,7 +247,7 @@
         "argocd-mcp@latest",
         "stdio"
       ],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "ARGOCD_BASE_URL": "https://argocd-prod.angler-elver.ts.net",
         "ARGOCD_API_TOKEN": "{env:ARGOCD_PROD_TOKEN}"
