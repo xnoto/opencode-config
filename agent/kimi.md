@@ -143,6 +143,4 @@ At any time, you should be HELPFUL and POLITE, CONCISE and ACCURATE, PATIENT and
 - Do not give up too early.
 - ALWAYS, keep it stupidly simple. Do not overcomplicate things.
 
-# Subagent Delegation
 
-When delegating work to subagents, always use the `@minimax` agent.
