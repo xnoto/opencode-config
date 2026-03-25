@@ -24,7 +24,7 @@
       "pwd *": "allow",
       "pre-commit *": "allow"
     },
-    "aws-doc_*": "allow",
+    "aws-docs_*": "allow",
     "codesearch": "allow",
     "context7_*": "allow",
     "context-mode_*": "allow",
@@ -107,12 +107,18 @@
     "grafana_tempo_traceql-metrics-instant": "allow",
     "grafana_tempo_traceql-metrics-range": "allow",
     "grafana_tempo_traceql-search": "allow",
-    "kubernetes_kubectl_describe": "allow",
-    "kubernetes_kubectl_get": "allow",
-    "kubernetes_kubectl_logs": "allow",
-    "kubernetes_explain_resource": "allow",
-    "kubernetes_list_api_resources": "allow",
-    "kubernetes_ping": "allow",
+    "kubernetes-staging-eks_kubectl_describe": "allow",
+    "kubernetes-staging-eks_kubectl_get": "allow",
+    "kubernetes-staging-eks_kubectl_logs": "allow",
+    "kubernetes-staging-eks_explain_resource": "allow",
+    "kubernetes-staging-eks_list_api_resources": "allow",
+    "kubernetes-staging-eks_ping": "allow",
+    "kubernetes-prod-eks_kubectl_describe": "allow",
+    "kubernetes-prod-eks_kubectl_get": "allow",
+    "kubernetes-prod-eks_kubectl_logs": "allow",
+    "kubernetes-prod-eks_explain_resource": "allow",
+    "kubernetes-prod-eks_list_api_resources": "allow",
+    "kubernetes-prod-eks_ping": "allow",
     "linear_extract_images": "allow",
     "linear_get_attachment": "allow",
     "linear_get_document": "allow",
@@ -157,24 +163,24 @@
     "aws-api-staging_suggest_aws_commands": "allow",
     "aws-api-prod_call_aws": "allow",
     "aws-api-prod_suggest_aws_commands": "allow",
-    "argocd-staging_list_applications": "allow",
-    "argocd-staging_get_application": "allow",
-    "argocd-staging_get_application_resource_tree": "allow",
-    "argocd-staging_get_application_managed_resources": "allow",
-    "argocd-staging_get_application_workload_logs": "allow",
-    "argocd-staging_get_application_events": "allow",
-    "argocd-staging_get_resource_events": "allow",
-    "argocd-staging_get_resources": "allow",
-    "argocd-staging_get_resource_actions": "allow",
-    "argocd-prod_list_applications": "allow",
-    "argocd-prod_get_application": "allow",
-    "argocd-prod_get_application_resource_tree": "allow",
-    "argocd-prod_get_application_managed_resources": "allow",
-    "argocd-prod_get_application_workload_logs": "allow",
-    "argocd-prod_get_application_events": "allow",
-    "argocd-prod_get_resource_events": "allow",
-    "argocd-prod_get_resources": "allow",
-    "argocd-prod_get_resource_actions": "allow",
+    "argocd-staging-eks_list_applications": "allow",
+    "argocd-staging-eks_get_application": "allow",
+    "argocd-staging-eks_get_application_resource_tree": "allow",
+    "argocd-staging-eks_get_application_managed_resources": "allow",
+    "argocd-staging-eks_get_application_workload_logs": "allow",
+    "argocd-staging-eks_get_application_events": "allow",
+    "argocd-staging-eks_get_resource_events": "allow",
+    "argocd-staging-eks_get_resources": "allow",
+    "argocd-staging-eks_get_resource_actions": "allow",
+    "argocd-prod-eks_list_applications": "allow",
+    "argocd-prod-eks_get_application": "allow",
+    "argocd-prod-eks_get_application_resource_tree": "allow",
+    "argocd-prod-eks_get_application_managed_resources": "allow",
+    "argocd-prod-eks_get_application_workload_logs": "allow",
+    "argocd-prod-eks_get_application_events": "allow",
+    "argocd-prod-eks_get_resource_events": "allow",
+    "argocd-prod-eks_get_resources": "allow",
+    "argocd-prod-eks_get_resource_actions": "allow",
     "todoread": "allow",
     "todowrite": "allow",
     "webfetch": "allow",
@@ -240,7 +246,7 @@
         "AWS_API_MCP_PROFILE_NAME": "prod"
       }
     },
-    "aws-doc": {
+    "aws-docs": {
       "type": "local",
       "command": [
         "uvx",
@@ -318,14 +324,29 @@
       ],
       "enabled": true
     },
-    "kubernetes": {
+    "kubernetes-staging-eks": {
       "type": "local",
       "command": [
         "npx",
         "-y",
         "mcp-server-kubernetes"
       ],
-      "enabled": true
+      "enabled": true,
+      "environment": {
+        "K8S_CONTEXT": "staging-eks.angler-elver.ts.net"
+      }
+    },
+    "kubernetes-prod-eks": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-server-kubernetes"
+      ],
+      "enabled": true,
+      "environment": {
+        "K8S_CONTEXT": "prod-eks.angler-elver.ts.net"
+      }
     },
     "opencode-docs": {
       "type": "local",
@@ -341,7 +362,7 @@
       "url": "https://mcp.context7.com/mcp",
       "enabled": true
     },
-    "argocd-staging": {
+    "argocd-staging-eks": {
       "type": "local",
       "command": [
         "npx",
@@ -355,7 +376,7 @@
         "ARGOCD_API_TOKEN": "{env:ARGOCD_STAGING_TOKEN}"
       }
     },
-    "argocd-prod": {
+    "argocd-prod-eks": {
       "type": "local",
       "command": [
         "npx",
