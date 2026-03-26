@@ -113,12 +113,6 @@
     "kubernetes-staging-eks_explain_resource": "allow",
     "kubernetes-staging-eks_list_api_resources": "allow",
     "kubernetes-staging-eks_ping": "allow",
-    "kubernetes-prod-eks_kubectl_describe": "allow",
-    "kubernetes-prod-eks_kubectl_get": "allow",
-    "kubernetes-prod-eks_kubectl_logs": "allow",
-    "kubernetes-prod-eks_explain_resource": "allow",
-    "kubernetes-prod-eks_list_api_resources": "allow",
-    "kubernetes-prod-eks_ping": "allow",
     "linear_extract_images": "allow",
     "linear_get_attachment": "allow",
     "linear_get_document": "allow",
@@ -334,18 +328,6 @@
       "enabled": true,
       "environment": {
         "K8S_CONTEXT": "staging-eks.angler-elver.ts.net"
-      }
-    },
-    "kubernetes-prod-eks": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "mcp-server-kubernetes"
-      ],
-      "enabled": true,
-      "environment": {
-        "K8S_CONTEXT": "prod-eks.angler-elver.ts.net"
       }
     },
     "opencode-docs": {
