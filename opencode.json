@@ -107,12 +107,12 @@
     "grafana_tempo_traceql-metrics-instant": "allow",
     "grafana_tempo_traceql-metrics-range": "allow",
     "grafana_tempo_traceql-search": "allow",
-    "kubernetes-staging-eks_kubectl_describe": "allow",
-    "kubernetes-staging-eks_kubectl_get": "allow",
-    "kubernetes-staging-eks_kubectl_logs": "allow",
-    "kubernetes-staging-eks_explain_resource": "allow",
-    "kubernetes-staging-eks_list_api_resources": "allow",
-    "kubernetes-staging-eks_ping": "allow",
+    "kubernetes_kubectl_describe": "allow",
+    "kubernetes_kubectl_get": "allow",
+    "kubernetes_kubectl_logs": "allow",
+    "kubernetes_explain_resource": "allow",
+    "kubernetes_list_api_resources": "allow",
+    "kubernetes_ping": "allow",
     "linear_extract_images": "allow",
     "linear_get_attachment": "allow",
     "linear_get_document": "allow",
@@ -318,7 +318,7 @@
       ],
       "enabled": true
     },
-    "kubernetes-staging-eks": {
+    "kubernetes": {
       "type": "local",
       "command": [
         "npx",
