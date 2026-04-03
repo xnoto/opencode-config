@@ -56,3 +56,7 @@ Search results can flood context. Use `context-mode_ctx_execute(language: "shell
 | `ctx stats` | Call the `stats` MCP tool and display the full output verbatim |
 | `ctx doctor` | Call the `doctor` MCP tool, run the returned shell command, display as checklist |
 | `ctx upgrade` | Call the `upgrade` MCP tool, run the returned shell command, display as checklist |
+
+## Context7 Documentation
+
+Always use Context7 when you need library/API documentation, code generation, setup or configuration steps without the user having to explicitly ask. **CRITICAL EXCEPTION:** Do NOT use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation. For infrastructure-as-code, AWS schemas, and OpenCode internals, you must use the specialized `aws-docs`, `terraform-docs`, `opentofu-docs`, or `opencode-docs` tools to ensure exact version and registry accuracy.
