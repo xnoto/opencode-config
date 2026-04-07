@@ -381,10 +381,10 @@
         "baseURL": "http://hero.makeitwork.cloud:8080/v1"
       },
       "models": {
-        "qwen2.5-coder-32b-instruct-q4_k_m.gguf": {
-          "name": "Qwen2.5-Coder-32B Q4_K_M (hero)",
+        "qwen2.5-coder-32b-instruct-q5_k_m.gguf": {
+          "name": "Qwen2.5-Coder-32B Q5_K_M (hero)",
           "limit": {
-            "context": 8192,
+            "context": 12288,
             "output": 4096
           }
         }
