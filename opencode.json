@@ -372,5 +372,26 @@
         "ARGOCD_API_TOKEN": "{env:ARGOCD_PROD_TOKEN}"
       }
     }
+  },
+  "provider": {
+    "llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama-server (hero)",
+      "options": {
+        "baseURL": "http://hero.makeitwork.cloud:8080/v1"
+      },
+      "models": {
+        "qwen2.5-coder-32b-instruct-q4_0.gguf": {
+          "name": "Qwen2.5-Coder-32B Q4_0 (hero)",
+          "options": {
+            "structuredOutputs": false
+          },
+          "limit": {
+            "context": 16384,
+            "output": 4096
+          }
+        }
+      }
+    }
   }
 }
