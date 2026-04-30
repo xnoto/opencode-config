@@ -5,7 +5,7 @@ description: Mandatory context-protection routing rules for large output, web fe
 
 ## When to load
 
-Load this skill at the start of the session whenever the `skill` tool is available, unless you are explicitly operating as the llama agent.
+Load this skill at the start of the session whenever the `skill` tool is available.
 
 ## Core rules
 

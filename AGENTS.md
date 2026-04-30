@@ -2,8 +2,7 @@
 
 ## Required skill loading
 
-- If the `skill` tool is available, non-llama agents must load the `context-mode` and `context7` skills at the start of the session before doing substantive work.
-- `agents/llama.md` intentionally opts out of these skills and should keep that override.
+- If the `skill` tool is available, agents must load the `context-mode` and `context7` skills at the start of the session before doing substantive work.
 
 ## context-mode routing
 
