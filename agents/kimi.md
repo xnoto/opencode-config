@@ -1,7 +1,7 @@
 ---
 description: Kimi Code CLI - Primary interactive CLI agent with pragmatic, tool-first engineering
 mode: primary
-model: kimi-for-coding/k2p5
+model: kimi-for-coding/k2p6
 temperature: 0.1
 ---
 
