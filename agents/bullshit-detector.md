@@ -1,7 +1,7 @@
 ---
-description: GPT-5.4 bullshit detector
+description: GPT-5.5 bullshit detector
 mode: subagent
-model: openai/gpt-5.4
+model: openai/gpt-5.5
 temperature: 0.05
 ---
 
