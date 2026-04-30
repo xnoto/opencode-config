@@ -18,6 +18,7 @@
 
 ## context7 routing
 
+- If a dedicated MCP documentation integration already exists for a technology, prefer that tool before Context7.
 - Use Context7 proactively for library and framework documentation, setup, configuration, and code examples.
 - Resolve the Context7 library ID first, then query the docs.
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
