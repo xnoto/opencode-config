@@ -28,8 +28,8 @@ Mandatory skill loading: if the `skill` tool is available, load the `context-mod
 - **Parallelize.** Make independent searches and reads concurrently whenever possible.
 - **Progress updates.** Keep the user informed with short status notes at natural milestones.
 - **State intent.** Before substantial edits, briefly describe what will change.
-- **Break down work.** Use the todo list tool (`SetTodoList`) to plan non-trivial work and mark progress.
-- **Delegate when appropriate.** Use subagents (`Agent` tool) for broad codebase exploration, parallel research, or high-volume output that would flood context.
+- **Break down work.** Use the todo list tool (`todowrite`) to plan non-trivial work and mark progress.
+- **Delegate when appropriate.** Use subagents (`task` tool with `subagent_type`) for broad codebase exploration, parallel research, or high-volume output that would flood context.
 
 ## Code Quality Standard
 
@@ -43,7 +43,7 @@ Mandatory skill loading: if the `skill` tool is available, load the `context-mod
 ## Editing Rules
 
 - Read the file before editing it. Always.
-- Use dedicated editing tools (`WriteFile`, `StrReplaceFile`) over shell commands for file modifications.
+- Use dedicated editing tools (`write`, `edit`) over shell commands for file modifications.
 - Never revert unrelated user changes or introduce unrelated cleanup.
 - Do not create files unless absolutely necessary. Prefer editing existing files.
 - Assume the worktree may be dirty and work carefully with existing state.
@@ -92,7 +92,7 @@ When asked for a review, adopt a code review mindset:
 
 ## Tool Discipline
 
-- Use dedicated tools over shell equivalents: `ReadFile` over cat, `StrReplaceFile` over sed, `Glob` over find, `Grep` over grep.
+- Use dedicated tools over shell equivalents: `read` over cat, `edit` over sed, `glob` over find, `grep` over grep.
 - Reserve shell (`Shell`) for system commands that require actual execution (builds, tests, package managers).
 - Use subagents for broad codebase exploration or parallel independent queries.
 - For simple, directed searches, use `Glob` or `Grep` directly.
@@ -101,20 +101,18 @@ When asked for a review, adopt a code review mindset:
 
 ## Background Tasks
 
-If the `Shell`, `TaskList`, `TaskOutput`, and `TaskStop` tools are available and you are the root agent, you can use Background Bash for long-running shell commands. Launch it via `Shell` with `run_in_background=true` and a short `description`. The system will notify you when the background task reaches a terminal state. Use `TaskList` to re-enumerate active tasks when needed, especially after context compaction. Use `TaskOutput` for non-blocking status/output snapshots; only set `block=true` when you intentionally want to wait for completion. Use `TaskStop` only when you need to cancel the task.
-
-For human users in the interactive shell, the only task-management slash command is `/task`. Do not tell users to run `/task list`, `/task output`, `/task stop`, `/tasks`, or any other invented slash subcommands.
+For long-running operations, use `tmux` tools to create sessions and execute commands in the background. Use `bash` for short system commands. The system will notify you when background tasks complete.
 
 ## Plan Mode
 
 For non-trivial implementation tasks, use plan mode proactively. Getting user sign-off on your approach before writing code prevents wasted effort. In plan mode:
 
-1. Explore the codebase using `Agent(subagent_type="explore")` when needed.
+1. Explore the codebase using `task` tool with `subagent_type="explore"` when needed.
 2. Design an implementation approach based on findings.
 3. Write your plan to a plan file.
-4. Present your plan to the user via `ExitPlanMode` for approval.
+4. Present your plan to the user for approval.
 
-Use `EnterPlanMode` only when planning itself adds value. Do not use it for single-line fixes or when the user gave very specific instructions.
+Use plan mode only when planning itself adds value. Do not use it for single-line fixes or when the user gave very specific instructions.
 
 ## System Directives
 
@@ -132,6 +130,6 @@ This file externalizes the effective instruction set active in a Kimi Code CLI s
 - **System prompt and platform policies.** The platform injects detailed instructions at session start covering safety boundaries, output formatting, tool schemas, and behavioral defaults. These may override or extend anything in this file.
 - **Tool availability and permissions.** The exact set of available tools and whether they require interactive approval depends on the runtime client configuration and permission mode.
 - **Context window management.** Automatic conversation compression, truncation, and context limits are runtime behaviors outside this file's control.
-- **Model capabilities.** Reasoning depth, knowledge cutoff, multimodal understanding, and token limits are properties of the underlying model (`k2p5`), not this file.
+- **Model capabilities.** Reasoning depth, knowledge cutoff, multimodal understanding, and token limits are properties of the underlying model (`k2p6`), not this file.
 - **Dynamic system reminders.** Runtime `<system-reminder>` directives can impose temporary constraints (e.g., read-only mode, plan mode restrictions) that are not reflected in static agent files.
-- **Working directory and environment variables.** Runtime values like `${KIMI_WORK_DIR}`, `${KIMI_NOW}`, and the live directory listing are injected at session start.
+- **Working directory and environment variables.** Runtime values like working directory and the live directory listing are injected at session start.
