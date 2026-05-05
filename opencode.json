@@ -332,11 +332,7 @@
     },
     "opencode-docs": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "opencode-docs-mcp@latest"
-      ],
+      "command": "opencode-docs-mcp"
       "enabled": true
     },
     "context7": {
