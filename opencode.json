@@ -332,7 +332,7 @@
     },
     "opencode-docs": {
       "type": "local",
-      "command": "opencode-docs-mcp"
+      "command": "opencode-docs-mcp",
       "enabled": true
     },
     "context7": {
