@@ -201,7 +201,7 @@
       "command": [
         "bunx",
         "mcp-remote",
-        "https://mcp.linear.app/sse"
+        "https://mcp.linear.app/mcp"
       ],
       "enabled": true
     },
