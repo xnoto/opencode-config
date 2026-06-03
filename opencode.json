@@ -200,6 +200,7 @@
       "type": "local",
       "command": [
         "bunx",
+        "--bun",
         "mcp-remote",
         "https://mcp.linear.app/mcp"
       ],
@@ -209,6 +210,7 @@
       "type": "local",
       "command": [
         "bunx",
+        "--bun",
         "mcp-remote",
         "https://mcp.notion.com/sse"
       ],
