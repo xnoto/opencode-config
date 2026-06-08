@@ -212,7 +212,9 @@
         "bunx",
         "--bun",
         "mcp-remote",
-        "https://mcp.notion.com/sse"
+        "https://mcp.notion.com/mcp",
+        "--transport",
+        "http-only"
       ],
       "enabled": true
     },
