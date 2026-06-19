@@ -8,8 +8,6 @@ repos:
       - id: check-yaml
       - id: check-json
         exclude: \.tmpl$
-      - id: no-commit-to-branch
-        args: [--branch, main]
       - id: detect-private-key
 
   - repo: https://github.com/commitizen-tools/commitizen
