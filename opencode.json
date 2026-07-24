@@ -154,10 +154,8 @@
     "tmux_list-panes": "allow",
     "tmux_list-windows": "allow",
     "tmux_capture-pane": "allow",
-    "aws-api-staging_call_aws": "allow",
-    "aws-api-staging_suggest_aws_commands": "allow",
-    "aws-api-prod_call_aws": "allow",
-    "aws-api-prod_suggest_aws_commands": "allow",
+    "aws-staging_*": "allow",
+    "aws-prod_*": "allow",
     "argocd-staging-eks_list_applications": "allow",
     "argocd-staging-eks_get_application": "allow",
     "argocd-staging-eks_get_application_resource_tree": "allow",
@@ -219,31 +217,35 @@
       ],
       "enabled": true
     },
-    "aws-api-staging": {
+    "aws-staging": {
       "type": "local",
       "command": [
         "uvx",
-        "awslabs.aws-api-mcp-server@latest"
+        "mcp-proxy-for-aws@1.6.4",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--profile",
+        "staging",
+        "--read-only",
+        "--metadata",
+        "AWS_REGION=us-east-2"
       ],
       "enabled": true,
-      "environment": {
-        "READ_OPERATIONS_ONLY": "true",
-        "AWS_REGION": "us-east-2",
-        "AWS_API_MCP_PROFILE_NAME": "staging"
-      }
+      "timeout": 100000
     },
-    "aws-api-prod": {
+    "aws-prod": {
       "type": "local",
       "command": [
         "uvx",
-        "awslabs.aws-api-mcp-server@latest"
+        "mcp-proxy-for-aws@1.6.4",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--profile",
+        "prod",
+        "--read-only",
+        "--metadata",
+        "AWS_REGION=us-east-2"
       ],
       "enabled": true,
-      "environment": {
-        "READ_OPERATIONS_ONLY": "true",
-        "AWS_REGION": "us-east-2",
-        "AWS_API_MCP_PROFILE_NAME": "prod"
-      }
+      "timeout": 100000
     },
     "aws-docs": {
       "type": "local",

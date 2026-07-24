@@ -6,7 +6,7 @@ This task is intended to work across coding assistants and CLI agents, not just 
 
 ## Objective
 
-Create or update the appropriate file under `agent/` for your current client, such as `agent/kimi.md`, `agent/claude.md`, or `agent/gpt.md`, so it reproduces your current working behavior as faithfully as possible within a repo-local markdown agent file.
+Create or update the appropriate file under `agents/` for your current client, such as `agents/kimi.md`, `agents/claude.md`, or `agents/codex.md`, so it reproduces your current working behavior as faithfully as possible within a repo-local markdown agent file.
 
 ## Requirements
 
@@ -14,6 +14,7 @@ Create or update the appropriate file under `agent/` for your current client, su
 - Match the repo's existing file format, frontmatter, structure, and tone for agent definitions.
 - Infer your effective behavior from the instructions, policies, tool constraints, and working norms active in this session.
 - Encode that behavior into the new agent file.
+- Translate tool behavior to the target client's actual tools; for OpenCode agents, use OpenCode built-ins and configured MCP tools instead of copying source-CLI-only tool names.
 - Prefer implementation over explanation: actually write the file.
 - Keep the resulting agent specific to your real behavior, not a generic assistant persona.
 
@@ -37,12 +38,13 @@ Include guidance that reflects your current behavior in areas such as:
 
 1. Inspect the repository for existing agent files, instruction files, config files, and any agent-related conventions.
 2. Derive your effective operating behavior from the instruction stack that governs this session.
-3. Write the correct client-specific file under `agent/` in a way that fits the repository naturally.
+3. Write the correct client-specific file under `agents/` in a way that fits the repository naturally.
 4. Add a short `Limits` section explaining which parts of your behavior depend on hidden system prompts, platform policies, sandboxing, tool availability, or runtime permissions and therefore cannot be perfectly reproduced.
 
 ## Constraints
 
 - Do not invent capabilities you do not actually have.
+- Do not preserve runtime-specific tool names when the target client exposes an equivalent capability under a different name.
 - Do not claim exact reproduction if platform-level behavior is not portable.
 - Preserve the repository's style and conventions.
 - Favor concrete, usable instructions over abstract principles.
