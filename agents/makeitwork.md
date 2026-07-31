@@ -12,7 +12,7 @@ Core assumptions:
 
 - Use **OpenTofu** (`tofu`), not HashiCorp Terraform, for infrastructure commands.
 - Treat **Kustomize/GitOps** as first-class infrastructure work.
-- Follow the same general coding practices as the Hatch Terraform agent: repo-first, narrow edits, local validation before PRs, and strong live-infra safety gates.
+- Work repo-first: make narrow edits, validate locally before PRs, and enforce strong live-infrastructure safety gates.
 
 ---
 
@@ -21,7 +21,7 @@ Core assumptions:
 Work primarily in `~/git/makeitworkcloud`. Skip GitHub-archived repos unless explicitly requested.
 
 - `tfroot-*`: live OpenTofu roots using S3 backend and SOPS-backed secrets.
-  - `tfroot-aws`: AWS buckets/policies and admin access key outputs.
+  - `tfroot-aws`: AWS S3 buckets, IAM users/roles and credentials, SOPS KMS resources, and GitHub Actions OIDC access.
   - `tfroot-cloudflare`: DNS, Zero Trust, tunnels, WARP/private routes.
   - `tfroot-github`: org repos, branch protections, teams, and GitHub Actions secrets.
   - `tfroot-libvirt`: libvirt/KVM VMs, cloud-init, private SSH/libvirt access.
@@ -31,12 +31,13 @@ Work primarily in `~/git/makeitworkcloud`. Skip GitHub-archived repos unless exp
 - `shared-workflows`: reusable GitHub Actions workflows for OpenTofu roots.
 - `cflan`: Python Cloudflare DNS utility.
 - `www`: static site and onion index deployed to S3/Cloudflare.
+- `.github`: public organization profile and community metadata.
 
 ---
 
 ## Standard Workflow
 
-1. Read `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/manifests before deciding.
+1. Read `AGENTS.md` first, then inspect relevant `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/manifests when present.
 2. Classify the repo and identify whether the change can affect live infrastructure, shared CI, runner images, public sites, or production deploys.
 3. Validate assumptions against the repo, docs MCP integrations (`opentofu-docs`, `aws-docs`, OpenCode docs, Context7 for libraries), and safe read-only live queries when available. Do not guess provider schemas, resource behavior, cluster state, or CI behavior.
 4. Preserve existing naming, layout, generated docs, Makefile targets, SOPS/KSOPS conventions, Kustomize structure, and centralized configs.
@@ -49,7 +50,7 @@ For infrastructure changes, check provider/module pins, variables/outputs/docs, 
 
 ## Safety Gates
 
-Ask for explicit confirmation immediately before any live, destructive, externally visible, or permission-expanding action. Show repo path, branch, command, target environment/backend if known, and likely systems touched.
+Ask for explicit confirmation immediately before any state-changing, destructive, externally visible, permission-expanding, or potentially sensitive live operation. Read-only diagnostics do not require confirmation unless explicitly listed below. Show repo path, branch, command, target environment/backend if known, and likely systems touched.
 
 Confirmation-required actions include:
 
@@ -63,9 +64,9 @@ Never run `tofu apply -auto-approve` or any apply target unless the user confirm
 
 ## OpenTofu and CI/CD Standards
 
-- For `fmt`, `validate`, and validation-oriented hooks, always initialize with an empty backend: `tofu init -backend=false`, unless the user explicitly says otherwise.
-- Before proposing, committing, pushing, or opening a PR, ensure repo-local pre-commit checks pass when tooling is available. Use `make test` where that is the convention; otherwise use `pre-commit run --all-files` after inspecting hooks.
-- OpenTofu roots normally use CI/CD: PRs run validation and plan; merges/pushes to `main` may run apply through `makeitworkcloud/shared-workflows/.github/workflows/opentofu.yml@main`. Prefer CI plan comments/checks over rerunning local live plans.
+- When `validate` or a validation-oriented hook requires initialization, use an empty backend: `tofu init -backend=false`, unless the user explicitly says otherwise. `tofu fmt` does not require initialization.
+- Before declaring work complete, committing, pushing, or opening a PR, ensure repo-local pre-commit checks pass when tooling is available. Use `make test` where that is the convention; otherwise use `pre-commit run --all-files` after inspecting hooks.
+- OpenTofu roots use CI/CD: PRs run validation and plan; every push to `main` starts the shared workflow's apply job after tests and any configured environment approval through `makeitworkcloud/shared-workflows/.github/workflows/opentofu.yml@main`. Prefer CI plan comments/checks over rerunning local live plans.
 - Keep terraform-docs README content synchronized when changing providers, modules, resources, variables, or outputs.
 - Before PRs with terraform-docs-generated changes, verify local `terraform-docs` matches the CI runner version, especially `images/tfroot-runner`; if not, use the runner/container version or state the mismatch.
 - `images/tfroot-runner/pre-commit-config.yaml` is canonical for tfroot hooks; do not fork it into roots unless explicitly asked.
@@ -105,7 +106,7 @@ Useful repo checks:
 - Never print, quote, commit, or summarize decrypted SOPS values, age keys, kubeconfigs, client certs, bearer tokens, Cloudflare tokens, GitHub tokens, AWS credentials, private SSH keys, backend credentials, OpenTofu state, sensitive plans, or provider debug logs.
 - Any Kubernetes Secret, Terraform/OpenTofu secret input, GitHub Actions secret, Cloudflare credential, OAuth client secret, SOPS age key material, or similar sensitive value must be SOPS-encrypted or referenced from an approved secret store before commit.
 - Before diffs, commits, PRs, or generated docs, explicitly check that no secrets, kubeconfigs, state snippets, decrypted SOPS values, or sensitive plan output are included.
-- Validate SOPS handling before publication: inspect `.sops.yaml`, confirm only intended fields are encrypted/decrypted, and use `sops -d`/extract only when needed without copying decrypted output into chat, files, logs, or commits.
+- Validate SOPS handling before publication: inspect `.sops.yaml` and confirm only intended fields are encrypted. Decrypt only when necessary; never run bare `sops -d`/`sops --decrypt` in a tool whose stdout is returned. Process plaintext inside a protected subprocess, emit only non-sensitive validation results, and never persist decrypted values to chat, files, logs, or commits.
 - If an unencrypted secret appears in a proposed public-repo change, stop and fix encryption before proceeding; if unsure, ask.
 
 ---
@@ -115,6 +116,6 @@ Useful repo checks:
 - Be concise and operational.
 - State assumptions briefly when proceeding under uncertainty.
 - For reviews, lead with findings by severity and include file/line references.
-- Final response: what changed, where, validation run, and explicit caveats or blocked checks.
+- Final response: what was examined or changed, where, validation run, and explicit caveats or blocked checks.
 
 Inspect first, change carefully, validate safely, and keep live infrastructure protected.
