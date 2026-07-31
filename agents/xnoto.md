@@ -31,6 +31,8 @@ Work primarily in `~/git/xnoto`. Classify the active repo before editing:
 
 When a requested change mentions an installed path like `~/.config/opencode/agents/foo.md`, map it back to the repo that owns it before editing. If the installed path is a chezmoi external git repo, edit that external repo; commit or push from that repo only when the user explicitly requests it. Do not bury the change inside `dotfiles` unless the external mapping itself needs to change.
 
+Repo-root `opencode.json` files are project-scoped overlays, not copies of the global config. OpenCode deep-merges them over `opencode-config/opencode.json`. Inherited MCP overrides must use the exact configured server key, and tool rules must use the matching `<server>_*` namespace. Compare the canonical global and project files first. `opencode mcp list` initializes configured servers and may make network requests, use credentials, or write caches; run it only when those effects are acceptable. Plugins can add servers that are absent from the static `mcp` object. When a global MCP is renamed, audit every `~/git/xnoto/*/opencode.json` for the old server key and tool namespace.
+
 ---
 
 ## Standard Workflow
@@ -38,9 +40,11 @@ When a requested change mentions an installed path like `~/.config/opencode/agen
 1. Read the repo-local guidance and tooling relevant to the task when present, such as `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/config files.
 2. Identify whether the file is chezmoi source, a chezmoi external, a generated/rendered home file, a package manifest, or application code.
 3. Check `git status --short --branch` in the specific repo before editing. Treat each sibling directory as its own repo with its own branch, status, remote, CI, and push target.
-4. Preserve existing naming, chezmoi source attributes, platform conditionals, external repo mappings, generated comments, and local formatting.
-5. Implement narrowly. Avoid moving ownership between repos unless the user's request is explicitly about repo boundaries or installation flow.
-6. Validate with the safest repo-native command. If validation is blocked by missing tools, credentials, SOPS age keys, platform mismatch, or network access, say exactly what was not run.
+4. Before committing, inspect local branch guards such as `no-commit-to-branch` and current remote branch rules. Start a feature branch when `main` is guarded rather than waiting for a rejected commit or push.
+5. Preserve existing naming, chezmoi source attributes, platform conditionals, external repo mappings, generated comments, and local formatting.
+6. Implement narrowly. Avoid moving ownership between repos unless the user's request is explicitly about repo boundaries or installation flow.
+7. Validate with the safest repo-native command. If validation is blocked by missing tools, credentials, SOPS age keys, platform mismatch, or network access, say exactly what was not run.
+8. Recheck `git status` and the diff after validation. Linters and package tools may rewrite tracked files; never include those changes silently.
 
 For cross-repo work, summarize the intended order before changing files: source repo edit, validation, optional apply/install, then optional commit/push for each affected repo.
 
@@ -50,6 +54,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 
 - Do not commit, push, open PRs, publish packages, or update taps unless explicitly requested.
 - Before any requested push, show the repo path, branch, remote, files changed, and why that repo is the correct upstream.
+- If branch protection requires a PR, push a feature branch and request explicit approval before creating or merging the PR. Do not bypass required checks to satisfy a request to push `main`.
 - A push from `opencode-config` updates `git@github.com:xnoto/opencode-config.git`; it does not update `dotfiles` unless `.chezmoiexternal.toml.tmpl` or related dotfiles source changed.
 - A push from `dotfiles` updates chezmoi source and external mappings; it does not push changes inside external repos. Check external repos separately.
 - `make install`, `make apply`, `chezmoi apply`, and commands that intentionally change installed user configuration or machine state outside the source checkout require explicit confirmation. Incidental cache or temporary-file writes do not.
@@ -65,7 +70,8 @@ For cross-repo work, summarize the intended order before changing files: source 
 - Preserve platform behavior in `.chezmoiignore` and templates: macOS uses `.zprofile`/AeroSpace and excludes Linux shell/i3/systemd paths; Linux uses `.bashrc.d`/i3 and excludes `.zprofile`/AeroSpace.
 - Keep `.chezmoiexternal.toml.tmpl` authoritative for external config repos. If changing how a config repo is fetched, inspect the current type (`git-repo` vs `archive`), target path, branch/archive URL, and refresh behavior.
 - Never copy a rendered external repo wholesale into `dotfiles`. Keep independent repos independent.
-- For OpenCode config changes, prefer OpenCode docs MCP over guessing schema or agent file format. Keep `AGENTS.md` context-mode/context7 routing consistent with the runtime config.
+- For OpenCode config changes, prefer the `opencode-docs` MCP over guessing schema or agent file format. Keep `AGENTS.md` context-mode/context7 routing consistent with the runtime config.
+- OpenCode loads configuration at startup. After changing `opencode.json`, agents, skills, plugins, or MCP configuration, remind the user to restart OpenCode; do not apply or restart it without confirmation.
 
 ---
 
