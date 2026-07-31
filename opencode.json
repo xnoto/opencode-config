@@ -201,46 +201,24 @@
       "enabled": true
     },
     "aws-staging": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "mcp-proxy-for-aws@1.6.4",
-        "https://aws-mcp.us-east-1.api.aws/mcp",
-        "--profile",
-        "staging",
-        "--read-only",
-        "--metadata",
-        "AWS_REGION=us-east-2"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8765/mcp",
       "enabled": true,
+      "oauth": false,
       "timeout": 100000
     },
     "aws-prod": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "mcp-proxy-for-aws@1.6.4",
-        "https://aws-mcp.us-east-1.api.aws/mcp",
-        "--profile",
-        "prod",
-        "--read-only",
-        "--metadata",
-        "AWS_REGION=us-east-2"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8766/mcp",
       "enabled": true,
+      "oauth": false,
       "timeout": 100000
     },
     "aws-docs": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "awslabs.aws-documentation-mcp-server@latest"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8767/mcp",
       "enabled": true,
-      "environment": {
-        "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_DOCUMENTATION_PARTITION": "aws"
-      }
+      "oauth": false
     },
     "github": {
       "type": "remote",
@@ -252,45 +230,28 @@
       }
     },
     "grafana": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "mcp-grafana@1.0.0"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8768/mcp",
       "enabled": true,
-      "environment": {
-        "GRAFANA_URL": "https://hatchengineering.grafana.net",
-        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_TOKEN}"
-      }
+      "oauth": false
     },
     "agent-hub": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "agent-hub-mcp@latest"
-      ],
-      "enabled": true
+      "type": "remote",
+      "url": "http://127.0.0.1:8776/mcp",
+      "enabled": true,
+      "oauth": false
     },
     "tmux": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "tmux-mcp"
-      ],
-      "enabled": true
+      "type": "remote",
+      "url": "http://127.0.0.1:8770/mcp",
+      "enabled": true,
+      "oauth": false
     },
     "terraform-docs": {
-      "type": "local",
-      "command": [
-        "podman",
-        "run",
-        "--rm",
-        "-i",
-        "docker.io/hashicorp/terraform-mcp-server:1.1.0"
-      ],
-      "enabled": true
+      "type": "remote",
+      "url": "http://127.0.0.1:8771/mcp",
+      "enabled": true,
+      "oauth": false
     },
     "opentofu-docs": {
       "type": "remote",
@@ -298,23 +259,16 @@
       "enabled": true
     },
     "kubernetes": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "mcp-server-kubernetes"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8772/mcp",
       "enabled": true,
-      "environment": {
-        "K8S_CONTEXT": "staging-eks.angler-elver.ts.net"
-      }
+      "oauth": false
     },
     "opencode-docs": {
-      "type": "local",
-      "command": [
-        "opencode-docs-mcp"
-      ],
-      "enabled": true
+      "type": "remote",
+      "url": "http://127.0.0.1:8773/mcp",
+      "enabled": true,
+      "oauth": false
     },
     "context7": {
       "type": "remote",
@@ -322,32 +276,16 @@
       "enabled": true
     },
     "argocd-staging-eks": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "argocd-mcp@latest",
-        "stdio"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8774/mcp",
       "enabled": true,
-      "environment": {
-        "ARGOCD_BASE_URL": "https://argocd-staging.angler-elver.ts.net",
-        "ARGOCD_API_TOKEN": "{env:ARGOCD_STAGING_TOKEN}"
-      }
+      "oauth": false
     },
     "argocd-prod-eks": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "argocd-mcp@latest",
-        "stdio"
-      ],
+      "type": "remote",
+      "url": "http://127.0.0.1:8775/mcp",
       "enabled": true,
-      "environment": {
-        "ARGOCD_BASE_URL": "https://argocd-prod.angler-elver.ts.net",
-        "ARGOCD_API_TOKEN": "{env:ARGOCD_PROD_TOKEN}"
-      }
+      "oauth": false
     }
   }
 }
