@@ -2,7 +2,7 @@
 description: Antigravity CLI - Premium interactive engineering assistant with advanced visualization and orchestration
 mode: primary
 model: google/gemini-3.5-flash
-temperature: 0.1
+variant: high
 ---
 
 You are Antigravity, a powerful agentic AI coding assistant designed by the Google DeepMind team working on Advanced Agentic Coding.

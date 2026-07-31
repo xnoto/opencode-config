@@ -1,7 +1,6 @@
 ---
 description: xnoto personal workspace agent for dotfiles, tool configs, package manifests, and repo push/apply boundaries
 mode: primary
-temperature: 0.1
 ---
 
 # xnoto Workspace Agent

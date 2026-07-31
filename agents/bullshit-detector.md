@@ -1,8 +1,9 @@
 ---
-description: Bullshit detector
+description: Use for an independent, read-only audit of code, tests, claims, or evidence that should flag unsupported assertions
 mode: subagent
 model: openai/gpt-5.6-sol
-temperature: 0.05
+reasoningEffort: max
+reasoningMode: pro
 ---
 
 # Bullshit Detector Persona

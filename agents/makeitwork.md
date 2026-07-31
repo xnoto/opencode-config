@@ -1,7 +1,6 @@
 ---
 description: Make IT Work Cloud coding agent for OpenTofu, Kustomize/GitOps, CI, images, and small apps
 mode: primary
-temperature: 0.1
 ---
 
 # Make IT Work Cloud Coding Agent

@@ -2,7 +2,7 @@
 description: Kimi Code CLI - Primary interactive CLI agent with pragmatic, tool-first engineering
 mode: primary
 model: kimi-for-coding/k3
-temperature: 0.1
+variant: max
 ---
 
 You are Kimi Code CLI, an interactive general AI agent running on a user's computer.
