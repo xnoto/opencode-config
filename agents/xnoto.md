@@ -27,16 +27,16 @@ Work primarily in `~/git/xnoto`. Classify the active repo before editing:
 - `codex-config`: canonical `~/.codex` repo, pulled by chezmoi as a git repo.
 - `claude-config`: canonical `.claude` content, currently fetched by chezmoi from the `main` branch archive rather than as a live git checkout.
 - `brewfile`: macOS Homebrew package manifest. `make`/`make check` validate, `make install` installs packages, and `make sync` regenerates from the current machine.
-- `homebrew-opencode-agent-hub` and `opencode-agent-hub`: formula/package distribution and source for the agent hub. Keep packaging changes aligned with the source release flow.
+- `homebrew-opencode-agent-hub` and `opencode-agent-hub`: formula/package distribution and source for the agent hub. Treat the published GitHub release and source release workflow as authoritative; before changing the tap formula, verify the release version, source URL, SHA256, license, resources, and whether automation owns the update.
 - App/utility repos such as `herofand`, `llama-hero`, `messaging-service`, and `xbox-media-utils` are normal independent repos; inspect their local docs and tooling before changing them.
 
-When a requested change mentions an installed path like `~/.config/opencode/agents/foo.md`, map it back to the repo that owns it before editing. If the installed path is a chezmoi external git repo, edit that external repo and push there; do not bury the change inside `dotfiles` unless the external mapping itself needs to change.
+When a requested change mentions an installed path like `~/.config/opencode/agents/foo.md`, map it back to the repo that owns it before editing. If the installed path is a chezmoi external git repo, edit that external repo; commit or push from that repo only when the user explicitly requests it. Do not bury the change inside `dotfiles` unless the external mapping itself needs to change.
 
 ---
 
 ## Standard Workflow
 
-1. Read the repo-local `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/config files before deciding.
+1. Read the repo-local guidance and tooling relevant to the task when present, such as `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/config files.
 2. Identify whether the file is chezmoi source, a chezmoi external, a generated/rendered home file, a package manifest, or application code.
 3. Check `git status --short --branch` in the specific repo before editing. Treat each sibling directory as its own repo with its own branch, status, remote, CI, and push target.
 4. Preserve existing naming, chezmoi source attributes, platform conditionals, external repo mappings, generated comments, and local formatting.
@@ -53,9 +53,9 @@ For cross-repo work, summarize the intended order before changing files: source 
 - Before any requested push, show the repo path, branch, remote, files changed, and why that repo is the correct upstream.
 - A push from `opencode-config` updates `git@github.com:xnoto/opencode-config.git`; it does not update `dotfiles` unless `.chezmoiexternal.toml.tmpl` or related dotfiles source changed.
 - A push from `dotfiles` updates chezmoi source and external mappings; it does not push changes inside external repos. Check external repos separately.
-- `make install`, `make apply`, `chezmoi apply`, and commands that write to `$HOME`, `~/.config`, shell startup files, package managers, or system service locations require explicit confirmation.
-- `brew bundle`, `make install` in `brewfile`, `make sync`, package publishing, formula updates, and service start/stop actions require explicit confirmation because they modify the machine or external distribution state.
-- Prefer preview commands (`make`, `make build`, `chezmoi diff --source=...`, lint/check targets) before apply/install commands.
+- `make install`, `make apply`, `chezmoi apply`, and commands that intentionally change installed user configuration or machine state outside the source checkout require explicit confirmation. Incidental cache or temporary-file writes do not.
+- `brew bundle`, `make install` in `brewfile`, `make sync`, package publishing, pushing tap/formula changes, and service start/stop actions require explicit confirmation because they modify the machine or external distribution state. Local formula source edits follow the normal edit workflow.
+- Prefer repo-documented, non-mutating previews before apply/install commands. For `dotfiles`, examples include `make`, `make build`, and `chezmoi diff --source=...`. Inspect other `make`, lint, and check recipes first; do not assume they are read-only or non-mutating.
 
 ---
 
@@ -75,14 +75,14 @@ For cross-repo work, summarize the intended order before changing files: source 
 - Treat all xnoto repos as public unless proven otherwise.
 - Never print, quote, commit, or summarize decrypted age/SOPS material, API tokens, SSH keys, GitHub tokens, AWS credentials, Grafana/Linear/Notion credentials, kubeconfigs, private config, or provider debug output.
 - In `dotfiles`, secrets belong in encrypted `encrypted_*.age` sources or approved secret stores. Templates may reference decrypted values at apply time; do not materialize them into tracked plaintext.
-- Before diffs, commits, pushes, or generated docs, explicitly check that no secrets, local machine paths with sensitive context, decrypted values, or private credentials were added.
+- Inspect changes locally for secrets, local machine paths with sensitive context, decrypted values, or private credentials before displaying, committing, pushing, or publishing a diff or generated documentation.
 
 ---
 
 ## Validation Hints
 
 - `dotfiles`: `make` for safe render dry-run; `make check`/`make test` for hooks and decryption checks when age keys are available.
-- `opencode-config`: inspect `.pre-commit-config.yaml` and `.github/workflows/lint.yaml`; run `pre-commit run --all-files` when available for agent/config edits.
+- `opencode-config`: inspect `.pre-commit-config.yaml` and `.github/workflows/lint.yaml`; run `pre-commit run --all-files` when edits are allowed. These hooks check syntax and repository hygiene, not OpenCode agent semantics or the full runtime schema, so validate those separately with the OpenCode schema and documented runtime behavior.
 - `brewfile`: `make` or `make check` for validation; avoid `make install` and `make sync` unless confirmed.
 - Other repos: inspect repo-local docs/tooling first and run the narrowest relevant check.
 
