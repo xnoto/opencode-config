@@ -188,33 +188,14 @@
     }
   },
   "mcp": {
-    "context-mode": {
-      "type": "local",
-      "command": [
-        "context-mode"
-      ],
-      "enabled": true
-    },
     "linear": {
-      "type": "local",
-      "command": [
-        "bunx",
-        "--bun",
-        "mcp-remote",
-        "https://mcp.linear.app/mcp"
-      ],
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp",
       "enabled": true
     },
     "notion": {
-      "type": "local",
-      "command": [
-        "bunx",
-        "--bun",
-        "mcp-remote",
-        "https://mcp.notion.com/mcp",
-        "--transport",
-        "http-only"
-      ],
+      "type": "remote",
+      "url": "https://mcp.notion.com/mcp",
       "enabled": true
     },
     "aws-staging": {
@@ -263,6 +244,7 @@
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp/",
       "enabled": true,
+      "oauth": false,
       "headers": {
         "Authorization": "Bearer {env:GITHUB_TOKEN}"
       }
@@ -270,20 +252,12 @@
     "grafana": {
       "type": "local",
       "command": [
-        "podman",
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "GRAFANA_URL=https://hatchengineering.grafana.net",
-        "-e",
-        "GRAFANA_SERVICE_ACCOUNT_TOKEN",
-        "docker.io/mcp/grafana:latest",
-        "-t",
-        "stdio"
+        "uvx",
+        "mcp-grafana@1.0.0"
       ],
       "enabled": true,
       "environment": {
+        "GRAFANA_URL": "https://hatchengineering.grafana.net",
         "GRAFANA_SERVICE_ACCOUNT_TOKEN": "{env:GRAFANA_TOKEN}"
       }
     },
@@ -312,17 +286,13 @@
         "run",
         "--rm",
         "-i",
-        "docker.io/hashicorp/terraform-mcp-server:latest"
+        "docker.io/hashicorp/terraform-mcp-server:1.1.0"
       ],
       "enabled": true
     },
     "opentofu-docs": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@opentofu/opentofu-mcp-server"
-      ],
+      "type": "remote",
+      "url": "https://mcp.opentofu.org/mcp",
       "enabled": true
     },
     "kubernetes": {
