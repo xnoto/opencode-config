@@ -4,6 +4,8 @@
   "plugin": [
     "opencode-antigravity-auth",
     "opencode-mem",
+    "opencode-models-discovery",
+    "opencode-auto-model-config",
     "context-mode"
   ],
   "permission": {
