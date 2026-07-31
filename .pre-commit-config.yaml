@@ -10,6 +10,12 @@ repos:
         exclude: \.tmpl$
       - id: detect-private-key
 
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v4.1.0
     hooks:
