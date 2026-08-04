@@ -11,7 +11,7 @@ Core assumptions:
 
 - `~/git/xnoto` is a directory of separate git repositories, not one monorepo.
 - `dotfiles` is a chezmoi source repo; it renders and applies files into `$HOME` and pulls several external repos into place.
-- Config repos such as `opencode-config`, `opencode-llama-config`, `codex-config`, `claude-config`, `brewfile`, and `alacritty-theme-linux-vconsole` are independent upstreams under `git@github.com:xnoto/*`.
+- Config repos such as `opencode-config`, `mcp-gateway`, `opencode-llama-config`, `codex-config`, `claude-config`, `brewfile`, and `alacritty-theme-linux-vconsole` are independent upstreams under `git@github.com:xnoto/*`.
 - Prefer editing the canonical source repo for a file, not a rendered copy in `$HOME`, unless the user explicitly asks for a local-only experiment.
 
 ---
@@ -22,6 +22,7 @@ Work primarily in `~/git/xnoto`. Classify the active repo before editing:
 
 - `dotfiles`: chezmoi-managed home configuration. Source names map to installed paths (`dot_foo` -> `~/.foo`, `dot_config/bar` -> `~/.config/bar`, templates lose `.tmpl`, encrypted age files decrypt at apply time). `make`/`make build` dry-run rendering; `make check`/`make test` run pre-commit and secret-decryption checks; `make install`/`make apply` writes to `$HOME`.
 - `opencode-config`: canonical `~/.config/opencode` repo, pulled by `dotfiles/.chezmoiexternal.toml.tmpl` as a git repo. Owns OpenCode agents, skills, prompts, `opencode.json`, MCP/permission config, and related linting.
+- `mcp-gateway`: canonical `~/.config/mcp-gateway` repo, pulled by `dotfiles/.chezmoiexternal.toml.tmpl` as a git repo on macOS and Linux. Owns the gateway supervisor, probes, server manifest, and executable wrappers. The platform LaunchAgent/systemd unit and encrypted credential rendering remain owned by `dotfiles`.
 - `opencode-llama-config`: canonical `~/.config/opencode-llama` repo, pulled by chezmoi as a git repo.
 - `codex-config`: canonical `~/.codex` repo, pulled by chezmoi as a git repo.
 - `claude-config`: canonical `.claude` content, currently fetched by chezmoi from the `main` branch archive rather than as a live git checkout.
@@ -56,6 +57,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 - Before any requested push, show the repo path, branch, remote, files changed, and why that repo is the correct upstream.
 - If branch protection requires a PR, push a feature branch and request explicit approval before creating or merging the PR. Do not bypass required checks to satisfy a request to push `main`.
 - A push from `opencode-config` updates `git@github.com:xnoto/opencode-config.git`; it does not update `dotfiles` unless `.chezmoiexternal.toml.tmpl` or related dotfiles source changed.
+- A push from `mcp-gateway` updates `git@github.com:xnoto/mcp-gateway.git`; it does not update the platform service definitions, secrets, or external mapping retained in `dotfiles`.
 - A push from `dotfiles` updates chezmoi source and external mappings; it does not push changes inside external repos. Check external repos separately.
 - `make install`, `make apply`, `chezmoi apply`, and commands that intentionally change installed user configuration or machine state outside the source checkout require explicit confirmation. Incidental cache or temporary-file writes do not.
 - `brew bundle`, `make install` in `brewfile`, `make sync`, package publishing, pushing tap/formula changes, and service start/stop actions require explicit confirmation because they modify the machine or external distribution state. Local formula source edits follow the normal edit workflow.
@@ -88,6 +90,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 
 - `dotfiles`: `make` for safe render dry-run; `make check`/`make test` for hooks and decryption checks when age keys are available.
 - `opencode-config`: inspect `.pre-commit-config.yaml` and `.github/workflows/lint.yaml`; run `pre-commit run --all-files` when edits are allowed. These hooks check syntax and repository hygiene, not OpenCode agent semantics or the full runtime schema, so validate those separately with the OpenCode schema and documented runtime behavior.
+- `mcp-gateway`: `make` or `make check` runs repository hygiene, secret detection, ShellCheck, JSON parsing, and Node syntax checks. Runtime health checks additionally require the installed checkout, credentials, packages, VPN access, and the platform service.
 - `brewfile`: `make` or `make check` for validation; avoid `make install` and `make sync` unless confirmed.
 - Other repos: inspect repo-local docs/tooling first and run the narrowest relevant check.
 
