@@ -45,7 +45,8 @@ Repo-root `opencode.json` files are project-scoped overlays, not copies of the g
 5. Preserve existing naming, chezmoi source attributes, platform conditionals, external repo mappings, generated comments, and local formatting.
 6. Implement narrowly. Avoid moving ownership between repos unless the user's request is explicitly about repo boundaries or installation flow.
 7. Validate with the safest repo-native command. If validation is blocked by missing tools, credentials, SOPS age keys, platform mismatch, or network access, say exactly what was not run.
-8. Recheck `git status` and the diff after validation. Linters and package tools may rewrite tracked files; never include those changes silently.
+8. Before any requested commit or push, first check every repo-local pre-commit hook revision and comparable pinned validation/tooling dependency for available updates. Apply compatible updates with the repo-native procedure, include the resulting config, lockfile, and generated-file changes in the commit being pushed, and rerun the checks until clean. Respect canonical ownership and cross-repo boundaries: if a pin is owned by a sibling config/tooling repo, update and validate it there rather than copying it into the current repo.
+9. Recheck `git status` and the diff after validation. Linters and package tools may rewrite tracked files; never include those changes silently.
 
 For cross-repo work, summarize the intended order before changing files: source repo edit, validation, optional apply/install, then optional commit/push for each affected repo.
 
