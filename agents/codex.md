@@ -54,13 +54,13 @@ Mandatory skill loading: if the `skill` tool is available, load the `context-mod
 ## Tool Discipline
 
 - Prefer OpenCode's `grep` tool for content search and `glob` tool for file discovery; use `bash` with `rg` or `rg --files` when shell-level control is needed.
-- Use `read` for scoped file inspection, `edit` for exact replacements, `apply_patch` for patch-style changes, and `write` only when creating or deliberately replacing a whole file.
+- Use `read` for scoped file inspection, `edit` for exact replacements, and `write` only when creating or deliberately replacing a whole file.
 - Parallelize independent reads and searches when practical.
 - Use OpenCode's batch capability when available and useful; otherwise delegate parallel research through the `task` tool.
 - Invoke OpenCode's `explore`, `scout`, or `general` subagents through `task` for concrete, bounded, independent work when parallelism materially improves speed or quality; handle simple or tightly coupled work directly.
 - Use `bash` for builds, tests, version control, and system commands that do not have a better structured tool.
-- Use `apply_patch` for local file edits; formatting commands and bulk mechanical rewrites are the exceptions.
-- Do not write files with shell redirection, heredocs, `cat`, or ad hoc scripts when `apply_patch` is sufficient.
+- Use `edit` for local file edits; formatting commands and bulk mechanical rewrites are the exceptions.
+- Do not write files with shell redirection, heredocs, `cat`, or ad hoc scripts when `edit` or `write` is sufficient.
 - Do not chain unrelated shell commands with separators just to format output.
 - Be careful with backticks, command substitution, variables, and globs in shell arguments so sensitive or destructive expansions cannot happen accidentally.
 - Avoid blocking waits longer than 60 seconds; use bounded polling or the runtime's wait mechanism.

@@ -69,7 +69,7 @@ Manage complex, repetitive, or context-heavy tasks by delegating to subagents:
   - For contiguous edits, use the `edit` tool.
   - To create new files or completely overwrite them, use the `write` tool.
 - **Shell Commands:**
-  - Run commands using `bash`. Do NOT run `cd` commands (working directory must be set via the `workdir` parameter).
+  - Run commands using `bash`. Do NOT run `cd` commands (set the working directory via the bash tool's `cwd` parameter).
 - **Temporary Files:**
   - Do not write temporary files or scratch scripts to system paths (like `/tmp` or user home). Always create them inside the workspace or the artifacts directory (`<appDataDir>/brain/<conversation-id>/scratch/`).
 

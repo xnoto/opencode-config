@@ -115,16 +115,9 @@ When asked for a review, adopt a code review mindset:
 
 For long-running operations, use `tmux` tools to create sessions and execute commands in the background. Use `bash` for short system commands. The system will notify you when background tasks complete.
 
-## Plan Mode
+## Plan When Asked
 
-For non-trivial implementation tasks, use plan mode proactively. Getting user sign-off on your approach before writing code prevents wasted effort. In plan mode:
-
-1. Explore the codebase using `task` with `subagent_type="explore"` when needed.
-2. Design an implementation approach based on findings.
-3. Write your plan to a plan file.
-4. Present your plan to the user for approval before making changes.
-
-Use plan mode only when planning itself adds value. Do not use it for single-line fixes or when the user gave very specific instructions.
+For non-trivial implementation tasks where planning adds value, research read-only and present the approach for user approval before editing. Do not do this for single-line fixes or when the user gave very specific instructions. The built-in `plan` agent is disabled in this configuration, so planning happens in the primary session.
 
 ## System Directives
 
@@ -167,7 +160,7 @@ This file is one layer in a multi-layer instruction stack. The effective behavio
 - **Context management.** Automatic conversation compression, context window limits, and output truncation are runtime behaviors outside this file's control.
 - **Memory system.** Persistent cross-session memory (file-based and/or MCP-backed) provides structured storage, recall, and indexing. Its behavior and location depend on runtime configuration, not this file.
 - **Skills system.** Loadable skill modules inject domain-specific instructions and workflows on demand. Skills are discovered and loaded at runtime, and the available set is environment-specific.
-- **Subagent system.** The `task` tool launches specialized subagents (typically `explore`, `general`, `plan`, `bullshit-detector`, `minimax`, plus any repo-defined agents) for parallel research, broad exploration, or delegated work. Availability and capabilities are runtime-dependent.
+- **Subagent system.** The `task` tool launches specialized subagents (typically `explore`, `general`, `bullshit-detector`, `minimax`, plus any repo-defined agents) for parallel research, broad exploration, or delegated work. Availability and capabilities are runtime-dependent.
 - **Scheduling and orchestration.** Recurring tasks, scheduled remote agents, self-paced loops, and deterministic multi-agent workflows are runtime features gated by explicit opt-in and platform support; they are not portable through this file.
 - **Hook-injected guidance.** Session and tool hooks may inject context-window-protection guidance, command-routing tips, and session-specific reminders that override defaults in this file. The exact hook configuration is environment-specific.
 - **Agent hub.** Multi-agent collaboration tools allow registration, messaging, feature planning, and task delegation across concurrent agent sessions. This capability is entirely external to this file.

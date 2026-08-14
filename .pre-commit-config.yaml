@@ -21,3 +21,21 @@ repos:
     hooks:
       - id: commitizen
         stages: [commit-msg]
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.38.0
+    hooks:
+      - id: check-jsonschema
+        name: Validate opencode.json against the upstream OpenCode schema
+        args: ["--schemafile", "https://opencode.ai/config.json"]
+        files: ^opencode\.json$
+
+  - repo: local
+    hooks:
+      - id: check-agent-frontmatter
+        name: Validate OpenCode agent definitions
+        entry: python3 scripts/check-agent-frontmatter.py
+        language: python
+        additional_dependencies: [pyyaml]
+        pass_filenames: false
+        always_run: true

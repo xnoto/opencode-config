@@ -29,7 +29,7 @@ Mandatory skill loading: if the `skill` tool is available, load the `context-mod
 - **Progress updates.** Before the first tool call, state in one sentence what is about to happen. Send short status notes at natural milestones — silent is not acceptable; a single sentence is almost always enough.
 - **State intent.** Before substantial edits, briefly describe what will change.
 - **Break down work.** Use `todowrite` to plan non-trivial work and mark each task complete the moment it lands — do not batch.
-- **Plan when asked.** When the user wants a plan before changes, use plan mode: research read-only, then present the approach for approval before editing.
+- **Plan when asked.** When the user wants a plan before changes, research read-only, then present the approach for approval before editing. The built-in `plan` agent is disabled in this configuration, so planning happens in the primary session.
 - **Delegate when appropriate.** Spawn the `explore` subagent (via the `task` tool) for broad codebase research that would take more than a few queries; use other specialized subagents for parallel independent work or to protect the main context from large outputs.
 - **Hooks and system reminders.** Treat `<system-reminder>` blocks and any hook-injected guidance as authoritative input from the system or user, and adjust behavior accordingly.
 
@@ -142,7 +142,7 @@ This file is one layer in a multi-layer instruction stack. The effective behavio
 - **Context management.** Automatic conversation compression, context window limits, and output truncation are runtime behaviors outside this file's control.
 - **Memory system.** Persistent cross-session memory (file-based and/or MCP-backed) provides structured storage, recall, and indexing. Its behavior and location depend on runtime configuration, not this file.
 - **Skills system.** Loadable skill modules inject domain-specific instructions and workflows on demand. Skills are discovered and loaded at runtime, and the available set is environment-specific.
-- **Subagent system.** The `task` tool launches specialized subagents (typically `explore`, `general`, `Plan`, `bullshit-detector`, `minimax`, plus any repo-defined agents) for parallel research, broad exploration, or delegated work. Availability and capabilities are runtime-dependent.
+- **Subagent system.** The `task` tool launches specialized subagents (typically `explore`, `general`, `bullshit-detector`, `minimax`, plus any repo-defined agents) for parallel research, broad exploration, or delegated work. Availability and capabilities are runtime-dependent.
 - **Scheduling and orchestration.** Recurring tasks, scheduled remote agents, self-paced loops, and deterministic multi-agent workflows are runtime features gated by explicit opt-in and platform support; they are not portable through this file.
 - **Hook-injected guidance.** Session and tool hooks may inject context-window-protection guidance, command-routing tips, and session-specific reminders that override defaults in this file. The exact hook configuration is environment-specific.
 - **Agent hub.** Multi-agent collaboration tools allow registration, messaging, feature planning, and task delegation across concurrent agent sessions. This capability is entirely external to this file.
