@@ -1,6 +1,8 @@
 ---
 description: xnoto personal workspace agent for dotfiles, tool configs, package manifests, and repo push/apply boundaries
 mode: primary
+model: kimi-for-coding/k3
+variant: max
 ---
 
 # xnoto Workspace Agent

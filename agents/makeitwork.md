@@ -1,6 +1,8 @@
 ---
 description: Make IT Work Cloud coding agent for OpenTofu, Kustomize/GitOps, CI, images, and small apps
 mode: primary
+model: kimi-for-coding/k3
+variant: max
 ---
 
 # Make IT Work Cloud Coding Agent
