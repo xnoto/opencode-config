@@ -248,12 +248,9 @@
     },
     "github": {
       "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp/",
+      "url": "http://127.0.0.1:8778/mcp",
       "enabled": true,
-      "oauth": false,
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_TOKEN}"
-      }
+      "oauth": false
     },
     "grafana": {
       "type": "remote",
@@ -298,8 +295,9 @@
     },
     "context7": {
       "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "enabled": true
+      "url": "http://127.0.0.1:8781/mcp",
+      "enabled": true,
+      "oauth": false
     },
     "argocd-staging-eks": {
       "type": "remote",
