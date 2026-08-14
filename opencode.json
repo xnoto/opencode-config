@@ -6,7 +6,7 @@
     "opencode-mem",
     "opencode-models-discovery",
     "opencode-auto-model-config",
-    "@rama_nigg/open-cursor@2.5.4",
+    "@rama_nigg/open-cursor@2.5.7",
     "context-mode"
   ],
   "provider": {
