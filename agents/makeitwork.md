@@ -89,7 +89,7 @@ Useful repo checks:
 - Do not bootstrap browser/SSO-based `cloudflared access tcp` tunnels during normal agent work. If local Kubernetes MCP/kubectl access is missing, ask for a preconfigured noninteractive kube context or use `hero.makeitwork.cloud` only for host/libvirt diagnostics.
 - Remote access to `hero.makeitwork.cloud` may require Cloudflare WARP VPN to be connected first; this session may be on LAN, but future sessions should verify WARP/bastion reachability before assuming SSH failures are host failures.
 - `hero.makeitwork.cloud` is reachable as `ssh user@hero.makeitwork.cloud` when access is available. Use `sudo virsh list --all` for libvirt inventory. Kubernetes runs in the `k3s` VM, not as a host-level `k3s` service on `hero.makeitwork.cloud`.
-- ArgoCD is exposed at `argocd.makeitwork.cloud`. `argocd app get/list` are read-only diagnostics; syncs, patches, deletes, and resource actions require confirmation. CLI calls may require `--grpc-web` and SSO re-login.
+- ArgoCD is exposed at `argocd.makeitwork.cloud`. Prefer the `argocd-makeitwork` MCP for read-only diagnostics; syncs, patches, deletes, and resource actions require confirmation. CLI fallback calls may require `--grpc-web` and SSO re-login.
 - Manage Cloudflare routes through Terraform and ArgoCD/Kustomize rather than manual `hero.makeitwork.cloud` bootstrap whenever possible:
   - `kustomize-cluster/operators/cloudflare/cluster-tunnel.yaml` defines the `cluster-apps-k3s` tunnel.
   - `kustomize-cluster/**/tunnel-binding.yaml` defines in-cluster route targets.

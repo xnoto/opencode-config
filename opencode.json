@@ -193,6 +193,15 @@
     "argocd-prod-eks_get_resource_events": "allow",
     "argocd-prod-eks_get_resources": "allow",
     "argocd-prod-eks_get_resource_actions": "allow",
+    "argocd-makeitwork_list_applications": "allow",
+    "argocd-makeitwork_get_application": "allow",
+    "argocd-makeitwork_get_application_resource_tree": "allow",
+    "argocd-makeitwork_get_application_managed_resources": "allow",
+    "argocd-makeitwork_get_application_workload_logs": "allow",
+    "argocd-makeitwork_get_application_events": "allow",
+    "argocd-makeitwork_get_resource_events": "allow",
+    "argocd-makeitwork_get_resources": "allow",
+    "argocd-makeitwork_get_resource_actions": "allow",
     "todoread": "allow",
     "todowrite": "allow",
     "webfetch": "allow",
@@ -301,6 +310,12 @@
     "argocd-prod-eks": {
       "type": "remote",
       "url": "http://127.0.0.1:8775/mcp",
+      "enabled": true,
+      "oauth": false
+    },
+    "argocd-makeitwork": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8777/mcp",
       "enabled": true,
       "oauth": false
     }
