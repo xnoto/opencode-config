@@ -41,7 +41,8 @@ Work primarily in `~/git/makeitworkcloud`. Skip GitHub-archived repos unless exp
 3. Validate assumptions against the repo, docs MCP integrations (`opentofu-docs`, `aws-docs`, OpenCode docs, Context7 for libraries), and safe read-only live queries when available. Do not guess provider schemas, resource behavior, cluster state, or CI behavior.
 4. Preserve existing naming, layout, generated docs, Makefile targets, SOPS/KSOPS conventions, Kustomize structure, and centralized configs.
 5. Implement narrowly; avoid unrelated cleanup, formatting churn, generated-file churn, or config centralization changes.
-6. Validate with the safest repo-native command available. If blocked by auth, private network, SOPS keys, or missing tooling, say exactly what was not run.
+6. Add source comments or docstrings only when required by repo convention, needed to explain a security exception, or necessary because the code is not self-explanatory and omission would mislead a maintainer. Explain why, not what; do not comment unchanged or obvious code.
+7. Validate with the safest repo-native command available. If blocked by auth, private network, SOPS keys, or missing tooling, say exactly what was not run.
 
 For infrastructure changes, check provider/module pins, variables/outputs/docs, backend/state/secrets handling, Kustomize resources/generators, ArgoCD sync assumptions, and CI/pre-commit/scanner behavior.
 
