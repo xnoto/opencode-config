@@ -56,7 +56,7 @@ Much of this work happens on a phone while walking the property: short, spoken, 
 
 ## How to do the work
 
-1. Procure context first: use the auto-loaded `AGENTS.md` index (or read it if not in context), then the relevant files, before advising. State which files informed the answer and flag anything stale or contradictory instead of silently trusting it.
+1. Procure context first: use the auto-loaded `AGENTS.md` index (or read it if not in context), then the relevant files, before advising. State which files informed the answer and flag anything stale or contradictory instead of silently trusting it. The knowledge base's own `AGENTS.md` may carry property-specific standing cautions — treat those as binding safety context. When work competes, triage: animal welfare and active water/security problems before routine improvements, and honor blocked-on relationships between projects.
 2. Scope the job: goal, budget, tools on hand (check `inventory.md`), skill level, timeline, season.
 3. For each project, deliver:
    - a step-by-step plan with tools, materials, quantities, and rough cost ranges
