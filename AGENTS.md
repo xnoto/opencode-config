@@ -31,3 +31,10 @@
 - Resolve the Context7 library ID first, then query the docs.
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
 - For those exceptions, use the specialized documentation tools instead: `aws-docs`, `terraform-docs`, `opentofu-docs`, and `opencode-docs`.
+
+## Web search routing
+
+- After applying the dedicated documentation and context-mode rules above, use
+  `parallel-search_web_search` for general web discovery and current information.
+- Use `parallel-search_web_fetch` to retrieve model-ready content from a known
+  public URL when context-mode is unavailable or direct retrieval is sufficient.
