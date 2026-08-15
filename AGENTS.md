@@ -32,9 +32,27 @@
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
 - For those exceptions, use the specialized documentation tools instead: `aws-docs`, `terraform-docs`, `opentofu-docs`, and `opencode-docs`.
 
-## Web search routing
+## parallel-search routing
 
-- After applying the dedicated documentation and context-mode rules above, use
-  `parallel-search_web_search` for general web discovery and current information.
-- Use `parallel-search_web_fetch` to retrieve model-ready content from a known
-  public URL when context-mode is unavailable or direct retrieval is sufficient.
+- `parallel-search_web_search` and `parallel-search_web_fetch` are the fallback
+  for the open web. Prefer dedicated documentation MCPs, Context7, and
+  context-mode fetch/indexing first; prefer parallel-search over the built-in
+  `webfetch` and `google_search` tools when available.
+- Use `parallel-search_web_search` for general web discovery and current
+  information not covered by a dedicated tool. Search excerpts are usually
+  sufficient; follow up with `parallel-search_web_fetch` only when excerpts
+  are truncated, conflicting, or exact wording is required.
+- Use `parallel-search_web_fetch` for known public URLs when context-mode is
+  unavailable or direct retrieval is sufficient. Always pass URLs the user
+  provides via the `urls` parameter (up to 20 per request).
+- Generate one `session_id` per conversation (UUID or 32+ character hex) and
+  reuse it for every parallel-search call; do not change it between turns.
+- Give each search call one atomic `objective` plus 2-3 concise related
+  `search_queries`; make separate calls for separate questions instead of
+  chaining searches.
+- Keep fetches in excerpt mode (leave `full_content` off) unless the entire
+  page is genuinely required; full-content fetches can exceed the context
+  window.
+- Do not use parallel-search for AWS, Terraform, OpenTofu, or OpenCode
+  documentation, GitHub repository content, or any source a dedicated MCP
+  covers. Fetch public URLs only; never attach credentials or private URLs.
