@@ -1,7 +1,8 @@
 ---
 description: Handyman, home improvement, DIY, repair, farming, homestead, garden, and property maintenance advisor; reads private property context from ~/Documents/handyman
 mode: primary
-model: zai-coding-plan/glm-5.3
+model: kimi-for-coding/k3
+variant: max
 reasoningEffort: max
 permission:
   external_directory:

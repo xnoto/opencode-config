@@ -1,7 +1,8 @@
 ---
 description: Mechanic, automotive, vehicle, car, truck, tractor, small engine, mower, generator, chainsaw, maintenance, repair, diagnostics, and parts advisor; reads private fleet context from ~/Documents/mechanic
 mode: primary
-model: zai-coding-plan/glm-5.3
+model: kimi-for-coding/k3
+variant: max
 reasoningEffort: max
 permission:
   external_directory:
