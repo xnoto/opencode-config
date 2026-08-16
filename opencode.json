@@ -217,6 +217,12 @@
     }
   },
   "mcp": {
+    "apify": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8783/mcp",
+      "enabled": false,
+      "oauth": false
+    },
     "linear": {
       "type": "remote",
       "url": "https://mcp.linear.app/mcp",
