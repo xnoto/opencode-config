@@ -52,6 +52,8 @@
     "aws-docs_*": "allow",
     "codesearch": "allow",
     "context7_*": "allow",
+    "mcp-gateway_context7_*": "allow",
+    "mcp-gateway_kubernetes_*": "allow",
     "parallel-search_*": "allow",
     "context-mode_ctx_doctor": "allow",
     "context-mode_ctx_search": "allow",
@@ -82,6 +84,31 @@
     "github_search_pull_requests": "allow",
     "github_search_repositories": "allow",
     "github_search_users": "allow",
+    "mcp-gateway_github_get_file_contents": "allow",
+    "mcp-gateway_github_get_commit": "allow",
+    "mcp-gateway_github_get_copilot_job_status": "allow",
+    "mcp-gateway_github_get_label": "allow",
+    "mcp-gateway_github_get_latest_release": "allow",
+    "mcp-gateway_github_get_me": "allow",
+    "mcp-gateway_github_get_release_by_tag": "allow",
+    "mcp-gateway_github_get_tag": "allow",
+    "mcp-gateway_github_get_team_members": "allow",
+    "mcp-gateway_github_get_teams": "allow",
+    "mcp-gateway_github_issue_read": "allow",
+    "mcp-gateway_github_list_branches": "allow",
+    "mcp-gateway_github_list_commits": "allow",
+    "mcp-gateway_github_list_issue_types": "allow",
+    "mcp-gateway_github_list_issues": "allow",
+    "mcp-gateway_github_list_pull_requests": "allow",
+    "mcp-gateway_github_list_releases": "allow",
+    "mcp-gateway_github_list_tags": "allow",
+    "mcp-gateway_github_pull_request_read": "allow",
+    "mcp-gateway_github_run_secret_scanning": "allow",
+    "mcp-gateway_github_search_code": "allow",
+    "mcp-gateway_github_search_issues": "allow",
+    "mcp-gateway_github_search_pull_requests": "allow",
+    "mcp-gateway_github_search_repositories": "allow",
+    "mcp-gateway_github_search_users": "allow",
     "grafana_fetch_pyroscope_profile": "allow",
     "grafana_find_error_pattern_logs": "allow",
     "grafana_find_slow_requests": "allow",
@@ -260,12 +287,6 @@
       "enabled": true,
       "oauth": false
     },
-    "github": {
-      "type": "remote",
-      "url": "http://127.0.0.1:8778/mcp",
-      "enabled": true,
-      "oauth": false
-    },
     "grafana": {
       "type": "remote",
       "url": "http://127.0.0.1:8768/mcp",
@@ -295,23 +316,21 @@
       "url": "https://mcp.opentofu.org/mcp",
       "enabled": true
     },
-    "kubernetes": {
-      "type": "remote",
-      "url": "http://127.0.0.1:8772/mcp",
-      "enabled": true,
-      "oauth": false
-    },
     "opencode-docs": {
       "type": "remote",
       "url": "http://127.0.0.1:8773/mcp",
       "enabled": true,
       "oauth": false
     },
-    "context7": {
+    "mcp-gateway": {
       "type": "remote",
-      "url": "http://127.0.0.1:8781/mcp",
+      "url": "https://mcp.makeitwork.cloud/mcp",
       "enabled": true,
-      "oauth": false
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
     },
     "parallel-search": {
       "type": "remote",
