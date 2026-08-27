@@ -50,6 +50,7 @@
       "pre-commit *": "allow"
     },
     "makeitwork-aws-docs_*": "allow",
+    "makeitwork-aws_*": "allow",
     "codesearch": "allow",
     "makeitwork-context7_*": "allow",
     "makeitwork-parallel-search_*": "allow",
@@ -237,6 +238,16 @@
     "makeitwork-aws-docs": {
       "type": "remote",
       "url": "https://mcp-makeitwork-aws-docs.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-aws": {
+      "type": "remote",
+      "url": "https://mcp.makeitwork.cloud/mcp",
       "enabled": true,
       "oauth": false,
       "headers": {
