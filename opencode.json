@@ -49,11 +49,11 @@
       "pwd *": "allow",
       "pre-commit *": "allow"
     },
-    "makeitwork-aws-docs_*": "allow",
+    "aws-docs_*": "allow",
     "makeitwork-aws_*": "allow",
     "codesearch": "allow",
-    "makeitwork-context7_*": "allow",
-    "makeitwork-parallel-search_*": "allow",
+    "context7_*": "allow",
+    "parallel-search_*": "allow",
     "context-mode_ctx_doctor": "allow",
     "context-mode_ctx_search": "allow",
     "context-mode_ctx_stats": "allow",
@@ -151,7 +151,7 @@
     "opentofu-docs_*": "allow",
     "read": "allow",
     "skill": "allow",
-    "makeitwork-terraform-docs_*": "allow",
+    "terraform-docs_*": "allow",
     "tmux_find-session": "allow",
     "tmux_list-sessions": "allow",
     "tmux_list-panes": "allow",
@@ -201,7 +201,7 @@
     }
   },
   "mcp": {
-    "makeitwork-apify": {
+    "apify": {
       "type": "remote",
       "url": "https://mcp-makeitwork-apify.makeitwork.cloud/mcp",
       "enabled": false,
@@ -235,7 +235,7 @@
       "oauth": false,
       "timeout": 100000
     },
-    "makeitwork-aws-docs": {
+    "aws-docs": {
       "type": "remote",
       "url": "https://mcp-makeitwork-aws-docs.makeitwork.cloud/mcp",
       "enabled": true,
@@ -273,7 +273,7 @@
       "enabled": true,
       "oauth": false
     },
-    "makeitwork-terraform-docs": {
+    "terraform-docs": {
       "type": "remote",
       "url": "https://mcp-makeitwork-terraform-docs.makeitwork.cloud/mcp",
       "enabled": true,
@@ -294,7 +294,7 @@
       "enabled": true,
       "oauth": false
     },
-    "makeitwork-parallel-search": {
+    "parallel-search": {
       "type": "remote",
       "url": "https://mcp-makeitwork-parallel-search.makeitwork.cloud/mcp",
       "enabled": true,
@@ -339,7 +339,7 @@
       },
       "timeout": 200000
     },
-    "makeitwork-context7": {
+    "context7": {
       "type": "remote",
       "url": "https://mcp-makeitwork-context7.makeitwork.cloud/mcp",
       "enabled": true,

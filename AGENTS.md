@@ -4,6 +4,10 @@
 
 - If the `skill` tool is available, agents must load the `context-mode` and `context7` skills at the start of the session before doing substantive work.
 
+## MCP routing
+
+For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana` (`grafana_*`). For Make IT Work Cloud resources, use only `makeitwork-aws`, `makeitwork-argocd`, `makeitwork-kubernetes`, and `makeitwork-grafana` (`makeitwork-grafana_*`). `apify`, `aws-docs`, `context7`, `parallel-search`, and `terraform-docs` are environment-neutral. Select by the named target environment; if it is unspecified, ask before querying or changing anything.
+
 ## context-mode routing
 
 - Use `context-mode` whenever it is available to protect the context window.
