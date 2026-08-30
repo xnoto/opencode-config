@@ -1,10 +1,8 @@
 ---
 description: Use only for a bounded, independent, read-only audit of a specific diff, claim, or evidence set when adversarial verification is warranted
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-5.6-terra
 steps: 12
-reasoningEffort: high
-reasoningMode: pro
 permission:
   edit: deny
   task: deny

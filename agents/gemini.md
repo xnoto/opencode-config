@@ -1,5 +1,5 @@
 ---
-description: Use for delegated coding or research when a fast, independent Antigravity model pass is useful
+description: Use for delegated coding or research when a fast, independent Gemini model pass is useful
 mode: subagent
 model: google/gemini-3.6-flash
 variant: low
