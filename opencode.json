@@ -204,7 +204,7 @@
     "makeitwork-apify": {
       "type": "remote",
       "url": "https://mcp-makeitwork-apify.makeitwork.cloud/mcp",
-      "enabled": false,
+      "enabled": true,
       "oauth": false,
       "headers": {
         "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
