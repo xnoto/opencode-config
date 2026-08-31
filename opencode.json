@@ -32,7 +32,6 @@
   },
   "permission": {
     "*": "ask",
-    "agent-hub_*": "allow",
     "bash": {
       "*": "ask",
       "gh pr list *": "allow",
@@ -258,12 +257,6 @@
     "grafana": {
       "type": "remote",
       "url": "http://127.0.0.1:8768/mcp",
-      "enabled": true,
-      "oauth": false
-    },
-    "agent-hub": {
-      "type": "remote",
-      "url": "http://127.0.0.1:8776/mcp",
       "enabled": true,
       "oauth": false
     },
