@@ -320,18 +320,6 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "linkedin": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "mcp-server-linkedin@latest"
-      ],
-      "enabled": true,
-      "environment": {
-        "UV_HTTP_TIMEOUT": "300"
-      },
-      "timeout": 200000
-    },
     "context7": {
       "type": "remote",
       "url": "https://mcp-makeitwork-context7.makeitwork.cloud/mcp",
