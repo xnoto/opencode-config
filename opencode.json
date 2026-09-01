@@ -123,6 +123,8 @@
     "linear_get_initiative": "allow",
     "linear_get_milestone": "allow",
     "linear_get_project": "allow",
+    "linear_get_team": "allow",
+    "linear_get_user": "allow",
     "linear_get_status_updates": "allow",
     "linear_list_comments": "allow",
     "linear_list_cycles": "allow",
