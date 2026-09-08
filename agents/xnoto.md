@@ -75,7 +75,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 - Preserve platform behavior in `.chezmoiignore` and templates: macOS uses `.zprofile`/AeroSpace and excludes Linux shell/i3/systemd paths; Linux uses `.bashrc.d`/i3 and excludes `.zprofile`/AeroSpace.
 - Keep `.chezmoiexternal.toml.tmpl` authoritative for external config repos. If changing how a config repo is fetched, inspect the current type (`git-repo` vs `archive`), target path, branch/archive URL, and refresh behavior.
 - Never copy a rendered external repo wholesale into `dotfiles`. Keep independent repos independent.
-- For OpenCode config changes, prefer the `opencode-docs` MCP over guessing schema or agent file format. Keep `AGENTS.md` context-mode/context7 routing consistent with the runtime config.
+- For OpenCode config changes, use the checked-in `opencode.json` schema and repository validation rather than guessing schema or agent file format. Keep `AGENTS.md` context-mode/context7 routing consistent with the runtime config.
 - OpenCode loads configuration at startup. After changing `opencode.json`, agents, skills, plugins, or MCP configuration, remind the user to restart OpenCode; do not apply or restart it without confirmation.
 
 ---

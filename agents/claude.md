@@ -118,7 +118,7 @@ When asked for a review, adopt a code review mindset:
 - For any operation whose output may exceed ~20 lines, route through `context-mode_ctx_batch_execute` or `context-mode_ctx_execute` so raw output stays in the sandbox.
 - When reading files for analysis rather than editing, prefer `context-mode_ctx_execute_file`. Reading a file you intend to edit is what `read` is for.
 - Use Context7 proactively for current library, framework, SDK, API, CLI, and cloud-service documentation; resolve the library ID first, then query.
-- Prefer dedicated documentation tools over Context7 for AWS, Terraform, OpenTofu, and OpenCode (`aws-docs`, `terraform-docs`, `opentofu-docs`, `opencode-docs`).
+- Prefer dedicated documentation tools over Context7 for AWS, Terraform, and OpenTofu (`aws-docs`, `terraform-docs`, `opentofu-docs`). For OpenCode configuration, use the checked-in schema and repository validation.
 
 ## Skills
 
@@ -140,10 +140,10 @@ This file is one layer in a multi-layer instruction stack. The effective behavio
 - **Tool availability and permissions.** The exact set of available tools depends on MCP server configuration and permission mode. A typical session includes built-in tools (`read`, `edit`, `glob`, `grep`, `bash`, `write`, `task`, `todowrite`), plus GitHub, tmux, and additional MCP servers. Tool calls may require interactive approval, and deferred MCP tools may need a discovery/search step before use.
 - **Context-mode routing.** `AGENTS.md` defines mandatory routing rules that intercept and redirect tool calls to protect the context window. This includes blocking shell HTTP, redirecting large-output operations to sandboxed execution, and enforcing a tool selection hierarchy. This layer fundamentally shapes how tools are used in practice.
 - **Context management.** Automatic conversation compression, context window limits, and output truncation are runtime behaviors outside this file's control.
-- **Memory system.** Persistent cross-session memory (file-based and/or MCP-backed) provides structured storage, recall, and indexing. Its behavior and location depend on runtime configuration, not this file.
+- **Memory system.** Persistent cross-session memory (file-based and/or MCP-backed) provides structured storage, recall, and indexing. Its behavior and location depend on the runtime configuration, not this file.
 - **Skills system.** Loadable skill modules inject domain-specific instructions and workflows on demand. Skills are discovered and loaded at runtime, and the available set is environment-specific.
 - **Subagent system.** The `task` tool launches specialized subagents (typically `explore`, `general`, `bullshit-detector`, `minimax`, plus any repo-defined agents) for parallel research, broad exploration, or delegated work. Availability and capabilities are runtime-dependent.
 - **Scheduling and orchestration.** Recurring tasks, scheduled remote agents, self-paced loops, and deterministic multi-agent workflows are runtime features gated by explicit opt-in and platform support; they are not portable through this file.
 - **Hook-injected guidance.** Session and tool hooks may inject context-window-protection guidance, command-routing tips, and session-specific reminders that override defaults in this file. The exact hook configuration is environment-specific.
-- **Agent hub.** Multi-agent collaboration tools allow registration, messaging, feature planning, and task delegation across concurrent agent sessions. This capability is entirely external to this file.
+- **Agent hub.** Multi-agent collaboration tools allow registration, messaging, feature planning, and service discovery across concurrent agent sessions. This capability is entirely external to this file.
 - **Model capabilities.** Reasoning depth, knowledge cutoff, multimodal understanding, and token limits are properties of the underlying model, not this file.
