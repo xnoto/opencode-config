@@ -35,7 +35,7 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 - Library and framework questions stay with Context7 even when phrased as "latest", "current", or "up to date" — freshness wording never reroutes documentation questions to web search.
 - Resolve the Context7 library ID first, then query the docs.
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
-- For those exceptions, use the specialized documentation tools instead: `aws-docs`, `terraform-docs`, `opentofu-docs`, and `opencode-docs`.
+- For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `aws-docs`, `terraform-docs`, and `opentofu-docs`. For OpenCode configuration, use the checked-in schema and repository validation.
 
 ## MCP integration changes (gateway-first)
 
