@@ -146,7 +146,6 @@
     "notion_notion-query-database-view": "allow",
     "notion_notion-query-meeting-notes": "allow",
     "notion_notion-search": "allow",
-    "opencode-docs_*": "allow",
     "opentofu-docs_*": "allow",
     "read": "allow",
     "skill": "allow",
@@ -280,12 +279,6 @@
       "type": "remote",
       "url": "https://mcp.opentofu.org/mcp",
       "enabled": true
-    },
-    "opencode-docs": {
-      "type": "remote",
-      "url": "http://127.0.0.1:8773/mcp",
-      "enabled": true,
-      "oauth": false
     },
     "parallel-search": {
       "type": "remote",
