@@ -163,8 +163,8 @@
     "argocd-staging-eks_get_application_managed_resources": "allow",
     "argocd-staging-eks_get_application_workload_logs": "allow",
     "argocd-staging-eks_get_application_events": "allow",
-    "argocd-staging-eks_get_resource_events": "allow",
     "argocd-staging-eks_get_resources": "allow",
+    "argocd-staging-eks_get_resource_events": "allow",
     "argocd-staging-eks_get_resource_actions": "allow",
     "argocd-prod-eks_list_applications": "allow",
     "argocd-prod-eks_get_application": "allow",
@@ -172,8 +172,8 @@
     "argocd-prod-eks_get_application_managed_resources": "allow",
     "argocd-prod-eks_get_application_workload_logs": "allow",
     "argocd-prod-eks_get_application_events": "allow",
-    "argocd-prod-eks_get_resource_events": "allow",
     "argocd-prod-eks_get_resources": "allow",
+    "argocd-prod-eks_get_resource_events": "allow",
     "argocd-prod-eks_get_resource_actions": "allow",
     "makeitwork-argocd_list_applications": "allow",
     "makeitwork-argocd_get_application": "allow",
@@ -181,8 +181,8 @@
     "makeitwork-argocd_get_application_managed_resources": "allow",
     "makeitwork-argocd_get_application_workload_logs": "allow",
     "makeitwork-argocd_get_application_events": "allow",
-    "makeitwork-argocd_get_resource_events": "allow",
     "makeitwork-argocd_get_resources": "allow",
+    "makeitwork-argocd_get_resource_events": "allow",
     "makeitwork-argocd_get_resource_actions": "allow",
     "todoread": "allow",
     "todowrite": "allow",
@@ -263,6 +263,12 @@
       "type": "remote",
       "url": "http://127.0.0.1:8770/mcp",
       "enabled": true,
+      "oauth": false
+    },
+    "codebase-memory": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8771/mcp",
+      "enabled": false,
       "oauth": false
     },
     "terraform-docs": {
