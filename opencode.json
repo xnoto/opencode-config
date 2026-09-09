@@ -146,7 +146,6 @@
     "notion_notion-get-users": "allow",
     "notion_notion-query-database-view": "allow",
     "notion_notion-query-meeting-notes": "allow",
-    "notion_notion-query-meeting-notes": "allow",
     "notion_notion-search": "allow",
     "opentofu-docs_*": "allow",
     "read": "allow",
