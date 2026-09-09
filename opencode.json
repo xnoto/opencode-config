@@ -199,6 +199,11 @@
     }
   },
   "mcp": {
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"],
+      "enabled": true
+    },
     "apify": {
       "type": "remote",
       "url": "https://mcp-makeitwork-apify.makeitwork.cloud/mcp",
