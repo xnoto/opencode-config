@@ -6,7 +6,7 @@
 
 ## MCP routing
 
-For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana` (`grafana_*`). For Make IT Work Cloud resources, use only `makeitwork-aws`, `makeitwork-argocd`, `makeitwork-kubernetes`, and `makeitwork-grafana` (`makeitwork-grafana_*`). `apify`, `aws-docs`, `context7`, `parallel-search`, and `terraform-docs` are environment-neutral. Select by the named target environment; if it is unspecified, ask before querying or changing anything.
+For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana` (`grafana_*`). For Make IT Work Cloud resources, use only `makeitwork-aws`, `makeitwork-argocd`, `makeitwork-kubernetes`, `makeitwork-cloudflare`, and `makeitwork-grafana` (`makeitwork-cloudflare_*`, `makeitwork-grafana_*`). `apify`, `aws-docs`, `context7`, `parallel-search`, and `terraform-docs` are environment-neutral. Select by the named target environment; if it is unspecified, ask before querying or changing anything.
 
 ## context-mode routing
 
@@ -37,13 +37,12 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
 - For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `aws-docs`, `terraform-docs`, and `opentofu-docs`. For OpenCode configuration, use the checked-in schema and repository validation.
 
-## MCP integration changes (gateway-first)
+## MCP integration changes (remote-first)
 
-- New MCP servers belong in the `mcp-gateway` repo (`servers.json` entry on the next free 87xx localhost port, plus a POSIX `bin/<name>` wrapper when the server needs credentials). Agent configs in `opencode-config`, `codex-config`, `claude-config`, and project `opencode.json` files only point at `http://127.0.0.1:<port>/mcp` with `oauth: false` — never put remote SaaS URLs, auth headers, or bearer-token plumbing in per-agent configs.
-- Credentials for gateway wrappers come from `dotfiles` `encrypted_secrets.yaml.age` via `private_dot_shellenv.tmpl` (the `*_mcp_token` key convention); wrappers source `~/.shellenv` themselves. Secrets never appear in agent config repos.
-- Disable-by-default in the global `opencode.json` (`enabled: false`); projects opt in. Keep `opencode-llama` opted out of non-essential servers.
-- Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define (e.g. a project-local stdio server).
-- After gateway changes, the gateway service must be restarted and agents reloaded before the tools appear; service restarts require explicit user confirmation.
+- Prefer remote Make IT Work Cloud MCP services (`https://mcp-makeitwork-<name>.makeitwork.cloud/mcp`) over local `mcp-gateway` ports. Add new remote Make IT Work Cloud servers directly to the agent configs in `opencode-config`, `codex-config`, and `claude-config` with OAuth disabled and Cloudflare Access headers referencing the existing `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET` environment variables by name only — never values, and never secrets in agent config repos.
+- The local `mcp-gateway` (`http://127.0.0.1:87xx/mcp`) remains only for services with no hosted remote equivalent; do not allocate a new localhost port when a remote Make IT Work Cloud endpoint exists.
+- Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define.
+- Remote additions need no gateway restart; reload the agent for the new server to appear. Reloading an installed client is an owner-run workstation operation.
 
 ## apify routing
 
