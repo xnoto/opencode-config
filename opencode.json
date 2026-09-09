@@ -50,6 +50,7 @@
     },
     "aws-docs_*": "allow",
     "makeitwork-aws_*": "allow",
+    "makeitwork-gcp_run_gcloud_command": "allow",
     "codesearch": "allow",
     "context7_*": "allow",
     "parallel-search_*": "allow",
@@ -144,6 +145,7 @@
     "notion_notion-get-teams": "allow",
     "notion_notion-get-users": "allow",
     "notion_notion-query-database-view": "allow",
+    "notion_notion-query-meeting-notes": "allow",
     "notion_notion-query-meeting-notes": "allow",
     "notion_notion-search": "allow",
     "opentofu-docs_*": "allow",
@@ -248,6 +250,17 @@
       "url": "https://mcp.makeitwork.cloud/mcp",
       "enabled": true,
       "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-gcp": {
+      "type": "remote",
+      "url": "https://mcp-makeitwork-gcp.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "timeout": 120000,
       "headers": {
         "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
