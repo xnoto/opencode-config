@@ -48,12 +48,14 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 ## Codebase Memory routing
 
 - `codebase-memory` is a local, derived code-discovery index served by the gateway. Use it only for repositories below `~/git`, and index each repository explicitly rather than indexing the parent directory.
+- The global server definition is disabled. An intended project opts in with only `"codebase-memory": { "enabled": true }`; do not duplicate the server URL or transport definition.
 - Keep shared graph-artifact persistence disabled so repository source is not modified. The local index can be stale or incomplete; use GitHub MCP for exact file reads, remote branch heads, repository writes, and freshness-critical claims.
 - The server has no credentials or OAuth flow. Its index updates local derived state, so preserve the normal confirmation boundary for tool calls that are not purely read-only.
 
 ## apify routing
 
 - Apify (`apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It is disabled globally and enabled only in projects that opt in; if the tools are absent, do not ask for them — use the normal web stack.
+- Apify is pay-per-event with real money and returns bulk datasets. It is the LAST resort, not a search tool: exhaust context-mode fetch/index, Context7, and parallel-search first. Reach for Apify only when the target is login-walled or anti-bot (Facebook Marketplace, Google Maps) or when structured listing records are the actual deliverable.
 - Every Apify call must be tight: set result limits (`resultsLimit`/`maxItems`), price filters, and location radius up front. Unbounded actor runs waste money and can blow the context window with dataset dumps.
 - Prefer the pinned first-class tools (`facebook-marketplace-scraper`, `google-maps-scraper`) over `call-actor` discovery; use `search-actors`/`call-actor` only for actors not pinned in the config.
 - Never put credentials, private URLs, or personal account cookies into actor inputs. Searches go out as generic buyer/research queries only.
