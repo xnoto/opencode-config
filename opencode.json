@@ -270,6 +270,12 @@
       "enabled": true,
       "oauth": false
     },
+    "codebase-memory": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8771/mcp",
+      "enabled": false,
+      "oauth": false
+    },
     "terraform-docs": {
       "type": "remote",
       "url": "https://mcp-makeitwork-terraform-docs.makeitwork.cloud/mcp",
