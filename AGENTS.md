@@ -45,6 +45,13 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 - Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define (e.g. a project-local stdio server).
 - After gateway changes, the gateway service must be restarted and agents reloaded before the tools appear; service restarts require explicit user confirmation.
 
+## Codebase Memory routing
+
+- `codebase-memory` is a local, derived code-discovery index served by the gateway. Use it only for repositories below `~/git`, and index each repository explicitly rather than indexing the parent directory.
+- The global server definition is disabled. An intended project opts in with only `"codebase-memory": { "enabled": true }`; do not duplicate the server URL or transport definition.
+- Keep shared graph-artifact persistence disabled so repository source is not modified. The local index can be stale or incomplete; use GitHub MCP for exact file reads, remote branch heads, repository writes, and freshness-critical claims.
+- The server has no credentials or OAuth flow. Its index updates local derived state, so preserve the normal confirmation boundary for tool calls that are not purely read-only.
+
 ## apify routing
 
 - Apify (`apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It is disabled globally and enabled only in projects that opt in; if the tools are absent, do not ask for them — use the normal web stack.
