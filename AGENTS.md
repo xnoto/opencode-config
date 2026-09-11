@@ -6,7 +6,18 @@
 
 ## MCP routing
 
-For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana` (`grafana_*`). For Make IT Work Cloud resources, use only `makeitwork-aws`, `makeitwork-argocd`, `makeitwork-kubernetes`, and `makeitwork-grafana` (`makeitwork-grafana_*`). `apify`, `aws-docs`, `context7`, `parallel-search`, and `terraform-docs` are environment-neutral. Select by the named target environment; if it is unspecified, ask before querying or changing anything.
+Select by the named target environment. If it is unspecified, ask before querying or changing anything.
+
+**Hatch** resources: use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana`. These are separate servers, so their tools are named `<server>_<tool>` with no extra prefix — Hatch Grafana is `grafana_query_prometheus`.
+
+**Make IT Work Cloud** resources: use only `makeitwork`. It is an aggregating gateway, so every integration reaches you through it as `makeitwork_makeitwork-<integration>_<tool>` — for example `makeitwork_makeitwork-grafana_query_prometheus`, `makeitwork_makeitwork-argocd_list_applications`, `makeitwork_makeitwork-kubernetes_pods_list`. AWS itself is one such integration, reached as `makeitwork_makeitwork-aws_aws___<tool>`; the gateway is not AWS-specific despite that prefix. There are no standalone `makeitwork-argocd`, `makeitwork-kubernetes`, or `makeitwork-grafana` servers.
+
+**Environment-neutral** tooling also arrives through the `makeitwork` gateway: `makeitwork_makeitwork-parallel-search_*` (web), `makeitwork_makeitwork-context7_*` (library docs), `makeitwork_makeitwork-aws-docs_*`, `makeitwork_makeitwork-terraform-docs_*`, `makeitwork_makeitwork-apify_*`. `opentofu-docs` is a standalone server.
+
+Because these integrations share one server entry, they can no longer be enabled or
+disabled individually via `mcp.<name>.enabled`. A project or profile that must opt out
+of one integration denies its tools instead:
+`"tools": { "makeitwork_makeitwork-apify_*": false }`.
 
 ## context-mode routing
 
@@ -35,11 +46,13 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 - Library and framework questions stay with Context7 even when phrased as "latest", "current", or "up to date" — freshness wording never reroutes documentation questions to web search.
 - Resolve the Context7 library ID first, then query the docs.
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
-- For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `aws-docs`, `terraform-docs`, and `opentofu-docs`. For OpenCode configuration, use the checked-in schema and repository validation.
+- For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `makeitwork_makeitwork-aws-docs_*`,
+  `makeitwork_makeitwork-terraform-docs_*`, and `opentofu-docs_*`. For OpenCode configuration, use the checked-in schema and repository validation.
 
 ## MCP integration changes (gateway-first)
 
-- New MCP servers belong in the `mcp-gateway` repo (`servers.json` entry on the next free 87xx localhost port, plus a POSIX `bin/<name>` wrapper when the server needs credentials). Agent configs in `opencode-config`, `codex-config`, `claude-config`, and project `opencode.json` files only point at `http://127.0.0.1:<port>/mcp` with `oauth: false` — never put remote SaaS URLs, auth headers, or bearer-token plumbing in per-agent configs.
+- New MCP servers belong in the `mcp-gateway` repo (`servers.json` entry on the next free 87xx localhost port, plus a POSIX `bin/<name>` wrapper when the server needs credentials). Agent configs in `opencode-config`, `codex-config`, `claude-config`, and project `opencode.json` files then point at `http://127.0.0.1:<port>/mcp` with `oauth: false`.
+- The two exceptions are the remote `makeitwork` gateway (one entry, CF-Access headers from the environment, re-exporting every Make IT Work Cloud integration) and the OAuth SaaS servers `linear` and `notion`. Do not add a second remote entry for a backend the `makeitwork` gateway already re-exports, and never inline a secret value — headers reference environment variables only.
 - Credentials for gateway wrappers come from `dotfiles` `encrypted_secrets.yaml.age` via `private_dot_shellenv.tmpl` (the `*_mcp_token` key convention); wrappers source `~/.shellenv` themselves. Secrets never appear in agent config repos.
 - Disable-by-default in the global `opencode.json` (`enabled: false`); projects opt in. Keep `opencode-llama` opted out of non-essential servers.
 - Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define (e.g. a project-local stdio server).
@@ -54,7 +67,7 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 
 ## apify routing
 
-- Apify (`apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It is disabled globally and enabled only in projects that opt in; if the tools are absent, do not ask for them — use the normal web stack.
+- Apify (`makeitwork_makeitwork-apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It arrives through the shared gateway and cannot be disabled per project, so the guardrail is behavioural, not configuration: treat it as opt-in by judgement and fall back to the normal web stack unless the criteria below are met.
 - Apify is pay-per-event with real money and returns bulk datasets. It is the LAST resort, not a search tool: exhaust context-mode fetch/index, Context7, and parallel-search first. Reach for Apify only when the target is login-walled or anti-bot (Facebook Marketplace, Google Maps) or when structured listing records are the actual deliverable.
 - Every Apify call must be tight: set result limits (`resultsLimit`/`maxItems`), price filters, and location radius up front. Unbounded actor runs waste money and can blow the context window with dataset dumps.
 - Prefer the pinned first-class tools (`facebook-marketplace-scraper`, `google-maps-scraper`) over `call-actor` discovery; use `search-actors`/`call-actor` only for actors not pinned in the config.
@@ -62,18 +75,19 @@ For Hatch resources, use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `
 
 ## parallel-search routing
 
-- `parallel-search_web_search` and `parallel-search_web_fetch` are the fallback
+- `makeitwork_makeitwork-parallel-search_web_search` and
+  `makeitwork_makeitwork-parallel-search_web_fetch` are the fallback
   for the open web. Lookup order: dedicated documentation MCPs, then Context7
   for any library or framework documentation, then context-mode fetch/indexing
   for known URLs, then parallel-search; prefer parallel-search over the
   built-in `webfetch` and `google_search` tools when available.
-- Use `parallel-search_web_search` for general web discovery and current
+- Use `makeitwork_makeitwork-parallel-search_web_search` for general web discovery and current
   information — news, prices, listings, vendors, and similar open-web topics.
   "Current information" never includes library or framework documentation;
   that belongs to Context7 regardless of how the question is phrased. Search
-  excerpts are usually sufficient; follow up with `parallel-search_web_fetch`
+  excerpts are usually sufficient; follow up with `makeitwork_makeitwork-parallel-search_web_fetch`
   only when excerpts are truncated, conflicting, or exact wording is required.
-- Use `parallel-search_web_fetch` for known public URLs when context-mode is
+- Use `makeitwork_makeitwork-parallel-search_web_fetch` for known public URLs when context-mode is
   unavailable or direct retrieval is sufficient. Always pass URLs the user
   provides via the `urls` parameter (up to 20 per request).
 - Generate one `session_id` per conversation (UUID or 32+ character hex) and
