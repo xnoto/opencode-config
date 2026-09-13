@@ -10,11 +10,11 @@ Select by the named target environment. If it is unspecified, ask before queryin
 
 **Hatch** resources: use only `aws-staging`, `aws-prod`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana`. These are separate servers, so their tools are named `<server>_<tool>` with no extra prefix — Hatch Grafana is `grafana_query_prometheus`.
 
-**Make IT Work Cloud** resources: use the direct `makeitwork-<integration>` servers — `makeitwork-apify`, `makeitwork-argocd`, `makeitwork-aws`, `makeitwork-aws-docs`, `makeitwork-cloudflare`, `makeitwork-context7`, `makeitwork-gcp`, `makeitwork-grafana`, `makeitwork-kubernetes`, `makeitwork-parallel-search`, `makeitwork-playwright`, `makeitwork-slidespeak`, `makeitwork-terraform-docs`, and `makeitwork-twilio-docs`. Each is its own remote server at `https://mcp-<integration>.makeitwork.cloud/mcp`, authenticating with `CF-Access-Client-*` headers referenced from the `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET` environment variables. Their tools are named `<server>_<tool>` — for example `makeitwork-grafana_query_prometheus`, `makeitwork-argocd_list_applications`, `makeitwork-kubernetes_pods_list`. AWS itself is one such server, reached as `makeitwork-aws_aws___<tool>`; the server is not AWS-specific despite that prefix. `github`, `hero-ssh`, and `codebase-memory` have no external endpoint and stay on internal or client-local transports.
+**Make IT Work Cloud** resources: use the direct Make IT Work Cloud remote servers. Eleven use bare integration names — `apify`, `aws-docs`, `cloudflare`, `context7`, `gcp`, `kubernetes`, `parallel-search`, `playwright`, `slidespeak`, `terraform-docs`, and `twilio-docs`. Three keep the `makeitwork-` prefix because their bare names collide with client integrations that represent other environments: `makeitwork-argocd` (the bare ArgoCD integrations are the Hatch `argocd-*-eks` servers), `makeitwork-aws` (the bare AWS integrations are the Hatch `aws-staging`/`aws-prod` servers), and `makeitwork-grafana` (the bare `grafana` server is Hatch Grafana). The prefix is a naming distinction only — all fourteen are the same kind of remote server at `https://mcp-<integration>.makeitwork.cloud/mcp`, authenticating with `CF-Access-Client-*` headers referenced from the `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET` environment variables. Their tools are named `<server>_<tool>` — for example `makeitwork-grafana_query_prometheus`, `makeitwork-argocd_list_applications`, `kubernetes_pods_list`, `aws-docs_search_documentation`. AWS itself is one such server, reached as `makeitwork-aws_aws___<tool>`; the server is not AWS-specific despite that prefix. `github`, `hero-ssh`, and `codebase-memory` have no external endpoint and stay on internal or client-local transports.
 
-**Environment-neutral** tooling also arrives through direct servers: `makeitwork-parallel-search_*` (web), `makeitwork-context7_*` (library docs), `makeitwork-aws-docs_*`, `makeitwork-terraform-docs_*`, `makeitwork-apify_*`, `makeitwork-cloudflare_*`, `makeitwork-gcp_*`, `makeitwork-playwright_*`, `makeitwork-slidespeak_*`, and `makeitwork-twilio-docs_*`. `opentofu-docs` is a standalone server.
+**Environment-neutral** tooling also arrives through direct servers: `parallel-search_*` (web), `context7_*` (library docs), `aws-docs_*`, `terraform-docs_*`, `apify_*`, `cloudflare_*`, `gcp_*`, `playwright_*`, `slidespeak_*`, and `twilio-docs_*`. `opentofu-docs` is a standalone server.
 
-Each integration is its own server entry again, so `mcp.makeitwork-<integration>.enabled` can enable or disable it individually per project or profile; the former aggregate `makeitwork` entry no longer exists. A project or profile can still deny one integration's tools instead: `"tools": { "makeitwork-apify_*": false }`.
+Each integration is its own server entry again, so `mcp.<server>.enabled` can enable or disable it individually per project or profile — for example `mcp.apify.enabled` or `mcp.makeitwork-grafana.enabled`; the former aggregate `makeitwork` entry no longer exists. A project or profile can still deny one integration's tools instead: `"tools": { "apify_*": false }`.
 
 ## context-mode routing
 
@@ -43,13 +43,13 @@ Each integration is its own server entry again, so `mcp.makeitwork-<integration>
 - Library and framework questions stay with Context7 even when phrased as "latest", "current", or "up to date" — freshness wording never reroutes documentation questions to web search.
 - Resolve the Context7 library ID first, then query the docs.
 - Do not use Context7 for AWS, Terraform, OpenTofu, or OpenCode documentation.
-- For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `makeitwork-aws-docs_*`,
-  `makeitwork-terraform-docs_*`, and `opentofu-docs_*`. For OpenCode configuration, use the checked-in schema and repository validation.
+- For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `aws-docs_*`,
+  `terraform-docs_*`, and `opentofu-docs_*`. For OpenCode configuration, use the checked-in schema and repository validation.
 
 ## MCP integration changes (gateway-first)
 
 - New MCP servers belong in the `mcp-gateway` repo (`servers.json` entry on the next free 87xx localhost port, plus a POSIX `bin/<name>` wrapper when the server needs credentials). Agent configs in `opencode-config`, `codex-config`, `claude-config`, and project `opencode.json` files then point at `http://127.0.0.1:<port>/mcp` with `oauth: false`.
-- The exceptions are the fourteen direct `makeitwork-<integration>` remote entries (one per external endpoint at `https://mcp-<integration>.makeitwork.cloud/mcp`, CF-Access headers from the environment) and the OAuth SaaS servers `linear` and `notion`. Do not add a second remote entry for a backend a direct `makeitwork-*` endpoint already serves, and never inline a secret value — headers reference environment variables only.
+- The exceptions are the fourteen direct Make IT Work Cloud remote entries (one per external endpoint at `https://mcp-<integration>.makeitwork.cloud/mcp`, CF-Access headers from the environment): the eleven bare-named servers `apify`, `aws-docs`, `cloudflare`, `context7`, `gcp`, `kubernetes`, `parallel-search`, `playwright`, `slidespeak`, `terraform-docs`, and `twilio-docs`, plus the three prefixed collision names `makeitwork-argocd`, `makeitwork-aws`, and `makeitwork-grafana` (kept prefixed because bare `argocd`, `aws`, and `grafana` are taken by client integrations for other environments). The OAuth SaaS servers `linear` and `notion` are also exceptions. Do not add a second remote entry for a backend one of these direct endpoints already serves, and never inline a secret value — headers reference environment variables only.
 - Credentials for gateway wrappers come from `dotfiles` `encrypted_secrets.yaml.age` via `private_dot_shellenv.tmpl` (the `*_mcp_token` key convention); wrappers source `~/.shellenv` themselves. Secrets never appear in agent config repos.
 - Disable-by-default in the global `opencode.json` (`enabled: false`); projects opt in. Keep `opencode-llama` opted out of non-essential servers.
 - Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define (e.g. a project-local stdio server).
@@ -64,7 +64,7 @@ Each integration is its own server entry again, so `mcp.makeitwork-<integration>
 
 ## apify routing
 
-- Apify (`makeitwork-apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It arrives through its own direct `makeitwork-apify` server entry, so a project or profile can disable it via `mcp.makeitwork-apify.enabled`; keep the guardrail behavioural regardless: treat it as opt-in by judgement and fall back to the normal web stack unless the criteria below are met.
+- Apify (`apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It arrives through its own direct `apify` server entry, so a project or profile can disable it via `mcp.apify.enabled`; keep the guardrail behavioural regardless: treat it as opt-in by judgement and fall back to the normal web stack unless the criteria below are met.
 - Apify is pay-per-event with real money and returns bulk datasets. It is the LAST resort, not a search tool: exhaust context-mode fetch/index, Context7, and parallel-search first. Reach for Apify only when the target is login-walled or anti-bot (Facebook Marketplace, Google Maps) or when structured listing records are the actual deliverable.
 - Every Apify call must be tight: set result limits (`resultsLimit`/`maxItems`), price filters, and location radius up front. Unbounded actor runs waste money and can blow the context window with dataset dumps.
 - Prefer the pinned first-class tools (`facebook-marketplace-scraper`, `google-maps-scraper`) over `call-actor` discovery; use `search-actors`/`call-actor` only for actors not pinned in the config.
@@ -72,19 +72,19 @@ Each integration is its own server entry again, so `mcp.makeitwork-<integration>
 
 ## parallel-search routing
 
-- `makeitwork-parallel-search_web_search` and
-  `makeitwork-parallel-search_web_fetch` are the fallback
+- `parallel-search_web_search` and
+  `parallel-search_web_fetch` are the fallback
   for the open web. Lookup order: dedicated documentation MCPs, then Context7
   for any library or framework documentation, then context-mode fetch/indexing
   for known URLs, then parallel-search; prefer parallel-search over the
   built-in `webfetch` and `google_search` tools when available.
-- Use `makeitwork-parallel-search_web_search` for general web discovery and current
+- Use `parallel-search_web_search` for general web discovery and current
   information — news, prices, listings, vendors, and similar open-web topics.
   "Current information" never includes library or framework documentation;
   that belongs to Context7 regardless of how the question is phrased. Search
-  excerpts are usually sufficient; follow up with `makeitwork-parallel-search_web_fetch`
+  excerpts are usually sufficient; follow up with `parallel-search_web_fetch`
   only when excerpts are truncated, conflicting, or exact wording is required.
-- Use `makeitwork-parallel-search_web_fetch` for known public URLs when context-mode is
+- Use `parallel-search_web_fetch` for known public URLs when context-mode is
   unavailable or direct retrieval is sufficient. Always pass URLs the user
   provides via the `urls` parameter (up to 20 per request).
 - Generate one `session_id` per conversation (UUID or 32+ character hex) and
