@@ -48,11 +48,11 @@
       "pwd *": "allow",
       "pre-commit *": "allow"
     },
-    "makeitwork_makeitwork-aws-docs_*": "allow",
-    "makeitwork_makeitwork-aws_*": "allow",
+    "makeitwork-aws-docs_*": "allow",
+    "makeitwork-aws_*": "allow",
     "codesearch": "allow",
-    "makeitwork_makeitwork-context7_*": "allow",
-    "makeitwork_makeitwork-parallel-search_*": "allow",
+    "makeitwork-context7_*": "allow",
+    "makeitwork-parallel-search_*": "allow",
     "context-mode_ctx_doctor": "allow",
     "context-mode_ctx_search": "allow",
     "context-mode_ctx_stats": "allow",
@@ -110,12 +110,65 @@
     "grafana_tempo_traceql-metrics-instant": "allow",
     "grafana_tempo_traceql-metrics-range": "allow",
     "grafana_tempo_traceql-search": "allow",
-    "makeitwork_makeitwork-kubernetes_kubectl_describe": "allow",
-    "makeitwork_makeitwork-kubernetes_kubectl_get": "allow",
-    "makeitwork_makeitwork-kubernetes_kubectl_logs": "allow",
-    "makeitwork_makeitwork-kubernetes_explain_resource": "allow",
-    "makeitwork_makeitwork-kubernetes_list_api_resources": "allow",
-    "makeitwork_makeitwork-kubernetes_ping": "allow",
+    "makeitwork-grafana_fetch_pyroscope_profile": "allow",
+    "makeitwork-grafana_find_error_pattern_logs": "allow",
+    "makeitwork-grafana_find_slow_requests": "allow",
+    "makeitwork-grafana_generate_deeplink": "allow",
+    "makeitwork-grafana_get_alert_group": "allow",
+    "makeitwork-grafana_get_alert_rule_by_uid": "allow",
+    "makeitwork-grafana_get_annotation_tags": "allow",
+    "makeitwork-grafana_get_annotations": "allow",
+    "makeitwork-grafana_get_assertions": "allow",
+    "makeitwork-grafana_get_current_oncall_users": "allow",
+    "makeitwork-grafana_get_dashboard_by_uid": "allow",
+    "makeitwork-grafana_get_dashboard_panel_queries": "allow",
+    "makeitwork-grafana_get_dashboard_property": "allow",
+    "makeitwork-grafana_get_dashboard_summary": "allow",
+    "makeitwork-grafana_get_datasource_by_name": "allow",
+    "makeitwork-grafana_get_datasource_by_uid": "allow",
+    "makeitwork-grafana_get_incident": "allow",
+    "makeitwork-grafana_get_oncall_shift": "allow",
+    "makeitwork-grafana_get_panel_image": "allow",
+    "makeitwork-grafana_get_sift_analysis": "allow",
+    "makeitwork-grafana_get_sift_investigation": "allow",
+    "makeitwork-grafana_list_alert_groups": "allow",
+    "makeitwork-grafana_list_alert_rules": "allow",
+    "makeitwork-grafana_list_contact_points": "allow",
+    "makeitwork-grafana_list_datasources": "allow",
+    "makeitwork-grafana_list_incidents": "allow",
+    "makeitwork-grafana_list_loki_label_names": "allow",
+    "makeitwork-grafana_list_loki_label_values": "allow",
+    "makeitwork-grafana_list_oncall_schedules": "allow",
+    "makeitwork-grafana_list_oncall_teams": "allow",
+    "makeitwork-grafana_list_oncall_users": "allow",
+    "makeitwork-grafana_list_prometheus_label_names": "allow",
+    "makeitwork-grafana_list_prometheus_label_values": "allow",
+    "makeitwork-grafana_list_prometheus_metric_metadata": "allow",
+    "makeitwork-grafana_list_prometheus_metric_names": "allow",
+    "makeitwork-grafana_list_pyroscope_label_names": "allow",
+    "makeitwork-grafana_list_pyroscope_label_values": "allow",
+    "makeitwork-grafana_list_pyroscope_profile_types": "allow",
+    "makeitwork-grafana_list_sift_investigations": "allow",
+    "makeitwork-grafana_query_loki_logs": "allow",
+    "makeitwork-grafana_query_loki_patterns": "allow",
+    "makeitwork-grafana_query_loki_stats": "allow",
+    "makeitwork-grafana_query_prometheus": "allow",
+    "makeitwork-grafana_query_prometheus_histogram": "allow",
+    "makeitwork-grafana_search_dashboards": "allow",
+    "makeitwork-grafana_search_folders": "allow",
+    "makeitwork-grafana_tempo_docs-traceql": "allow",
+    "makeitwork-grafana_tempo_get-attribute-names": "allow",
+    "makeitwork-grafana_tempo_get-attribute-values": "allow",
+    "makeitwork-grafana_tempo_get-trace": "allow",
+    "makeitwork-grafana_tempo_traceql-metrics-instant": "allow",
+    "makeitwork-grafana_tempo_traceql-metrics-range": "allow",
+    "makeitwork-grafana_tempo_traceql-search": "allow",
+    "makeitwork-kubernetes_kubectl_describe": "allow",
+    "makeitwork-kubernetes_kubectl_get": "allow",
+    "makeitwork-kubernetes_kubectl_logs": "allow",
+    "makeitwork-kubernetes_explain_resource": "allow",
+    "makeitwork-kubernetes_list_api_resources": "allow",
+    "makeitwork-kubernetes_ping": "allow",
     "linear_extract_images": "allow",
     "linear_get_attachment": "allow",
     "linear_get_document": "allow",
@@ -149,7 +202,7 @@
     "opentofu-docs_*": "allow",
     "read": "allow",
     "skill": "allow",
-    "makeitwork_makeitwork-terraform-docs_*": "allow",
+    "makeitwork-terraform-docs_*": "allow",
     "tmux_find-session": "allow",
     "tmux_list-sessions": "allow",
     "tmux_list-panes": "allow",
@@ -175,20 +228,20 @@
     "argocd-prod-eks_get_resource_events": "allow",
     "argocd-prod-eks_get_resources": "allow",
     "argocd-prod-eks_get_resource_actions": "allow",
-    "makeitwork_makeitwork-argocd_list_applications": "allow",
-    "makeitwork_makeitwork-argocd_get_application": "allow",
-    "makeitwork_makeitwork-argocd_get_application_resource_tree": "allow",
-    "makeitwork_makeitwork-argocd_get_application_managed_resources": "allow",
-    "makeitwork_makeitwork-argocd_get_application_workload_logs": "allow",
-    "makeitwork_makeitwork-argocd_get_application_events": "allow",
-    "makeitwork_makeitwork-argocd_get_resource_events": "allow",
-    "makeitwork_makeitwork-argocd_get_resources": "allow",
-    "makeitwork_makeitwork-argocd_get_resource_actions": "allow",
+    "makeitwork-argocd_list_applications": "allow",
+    "makeitwork-argocd_get_application": "allow",
+    "makeitwork-argocd_get_application_resource_tree": "allow",
+    "makeitwork-argocd_get_application_managed_resources": "allow",
+    "makeitwork-argocd_get_application_workload_logs": "allow",
+    "makeitwork-argocd_get_application_events": "allow",
+    "makeitwork-argocd_get_resource_events": "allow",
+    "makeitwork-argocd_get_resources": "allow",
+    "makeitwork-argocd_get_resource_actions": "allow",
     "todoread": "allow",
     "todowrite": "allow",
     "webfetch": "allow",
     "websearch": "allow",
-    "makeitwork_makeitwork-kubernetes_*": "allow"
+    "makeitwork-kubernetes_*": "allow"
   },
   "agent": {
     "plan": {
@@ -230,9 +283,139 @@
       "oauth": false,
       "timeout": 100000
     },
-    "makeitwork": {
+    "makeitwork-apify": {
       "type": "remote",
-      "url": "https://mcp.makeitwork.cloud/mcp",
+      "url": "https://mcp-apify.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-argocd": {
+      "type": "remote",
+      "url": "https://mcp-argocd.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-aws": {
+      "type": "remote",
+      "url": "https://mcp-aws.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-aws-docs": {
+      "type": "remote",
+      "url": "https://mcp-aws-docs.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-cloudflare": {
+      "type": "remote",
+      "url": "https://mcp-cloudflare.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-context7": {
+      "type": "remote",
+      "url": "https://mcp-context7.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-gcp": {
+      "type": "remote",
+      "url": "https://mcp-gcp.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-grafana": {
+      "type": "remote",
+      "url": "https://mcp-grafana.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-kubernetes": {
+      "type": "remote",
+      "url": "https://mcp-kubernetes.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-parallel-search": {
+      "type": "remote",
+      "url": "https://mcp-parallel-search.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-playwright": {
+      "type": "remote",
+      "url": "https://mcp-playwright.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-slidespeak": {
+      "type": "remote",
+      "url": "https://mcp-slidespeak.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-terraform-docs": {
+      "type": "remote",
+      "url": "https://mcp-terraform-docs.makeitwork.cloud/mcp",
+      "enabled": true,
+      "oauth": false,
+      "headers": {
+        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
+        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
+      }
+    },
+    "makeitwork-twilio-docs": {
+      "type": "remote",
+      "url": "https://mcp-twilio-docs.makeitwork.cloud/mcp",
       "enabled": true,
       "oauth": false,
       "headers": {
