@@ -48,11 +48,11 @@
       "pwd *": "allow",
       "pre-commit *": "allow"
     },
-    "makeitwork-aws-docs_*": "allow",
+    "aws-docs_*": "allow",
     "makeitwork-aws_*": "allow",
     "codesearch": "allow",
-    "makeitwork-context7_*": "allow",
-    "makeitwork-parallel-search_*": "allow",
+    "context7_*": "allow",
+    "parallel-search_*": "allow",
     "context-mode_ctx_doctor": "allow",
     "context-mode_ctx_search": "allow",
     "context-mode_ctx_stats": "allow",
@@ -162,12 +162,12 @@
     "makeitwork-grafana_tempo_traceql-metrics-instant": "allow",
     "makeitwork-grafana_tempo_traceql-metrics-range": "allow",
     "makeitwork-grafana_tempo_traceql-search": "allow",
-    "makeitwork-kubernetes_kubectl_describe": "allow",
-    "makeitwork-kubernetes_kubectl_get": "allow",
-    "makeitwork-kubernetes_kubectl_logs": "allow",
-    "makeitwork-kubernetes_explain_resource": "allow",
-    "makeitwork-kubernetes_list_api_resources": "allow",
-    "makeitwork-kubernetes_ping": "allow",
+    "kubernetes_kubectl_describe": "allow",
+    "kubernetes_kubectl_get": "allow",
+    "kubernetes_kubectl_logs": "allow",
+    "kubernetes_explain_resource": "allow",
+    "kubernetes_list_api_resources": "allow",
+    "kubernetes_ping": "allow",
     "linear_extract_images": "allow",
     "linear_get_attachment": "allow",
     "linear_get_document": "allow",
@@ -201,7 +201,7 @@
     "opentofu-docs_*": "allow",
     "read": "allow",
     "skill": "allow",
-    "makeitwork-terraform-docs_*": "allow",
+    "terraform-docs_*": "allow",
     "tmux_find-session": "allow",
     "tmux_list-sessions": "allow",
     "tmux_list-panes": "allow",
@@ -240,7 +240,7 @@
     "todowrite": "allow",
     "webfetch": "allow",
     "websearch": "allow",
-    "makeitwork-kubernetes_*": "allow"
+    "kubernetes_*": "allow"
   },
   "agent": {
     "plan": {
@@ -282,7 +282,7 @@
       "oauth": false,
       "timeout": 100000
     },
-    "makeitwork-apify": {
+    "apify": {
       "type": "remote",
       "url": "https://mcp-apify.makeitwork.cloud/mcp",
       "enabled": true,
@@ -312,7 +312,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-aws-docs": {
+    "aws-docs": {
       "type": "remote",
       "url": "https://mcp-aws-docs.makeitwork.cloud/mcp",
       "enabled": true,
@@ -322,7 +322,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-cloudflare": {
+    "cloudflare": {
       "type": "remote",
       "url": "https://mcp-cloudflare.makeitwork.cloud/mcp",
       "enabled": true,
@@ -332,7 +332,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-context7": {
+    "context7": {
       "type": "remote",
       "url": "https://mcp-context7.makeitwork.cloud/mcp",
       "enabled": true,
@@ -342,7 +342,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-gcp": {
+    "gcp": {
       "type": "remote",
       "url": "https://mcp-gcp.makeitwork.cloud/mcp",
       "enabled": true,
@@ -362,7 +362,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-kubernetes": {
+    "kubernetes": {
       "type": "remote",
       "url": "https://mcp-kubernetes.makeitwork.cloud/mcp",
       "enabled": true,
@@ -372,7 +372,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-parallel-search": {
+    "parallel-search": {
       "type": "remote",
       "url": "https://mcp-parallel-search.makeitwork.cloud/mcp",
       "enabled": true,
@@ -382,7 +382,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-playwright": {
+    "playwright": {
       "type": "remote",
       "url": "https://mcp-playwright.makeitwork.cloud/mcp",
       "enabled": true,
@@ -392,7 +392,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-slidespeak": {
+    "slidespeak": {
       "type": "remote",
       "url": "https://mcp-slidespeak.makeitwork.cloud/mcp",
       "enabled": true,
@@ -402,7 +402,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-terraform-docs": {
+    "terraform-docs": {
       "type": "remote",
       "url": "https://mcp-terraform-docs.makeitwork.cloud/mcp",
       "enabled": true,
@@ -412,7 +412,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "makeitwork-twilio-docs": {
+    "twilio-docs": {
       "type": "remote",
       "url": "https://mcp-twilio-docs.makeitwork.cloud/mcp",
       "enabled": true,
