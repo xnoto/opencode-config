@@ -113,7 +113,6 @@
     "makeitwork-grafana_fetch_pyroscope_profile": "allow",
     "makeitwork-grafana_find_error_pattern_logs": "allow",
     "makeitwork-grafana_find_slow_requests": "allow",
-    "makeitwork-grafana_generate_deeplink": "allow",
     "makeitwork-grafana_get_alert_group": "allow",
     "makeitwork-grafana_get_alert_rule_by_uid": "allow",
     "makeitwork-grafana_get_annotation_tags": "allow",
