@@ -48,7 +48,7 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
 
 ## MCP integration changes (remote-first)
 
-- Prefer an existing supported hosted remote endpoint appropriate to the SAME target environment over the local gateway, and verify the exact endpoint in canonical config; do not construct a hostname. Retain the local gateway for workstation-local or environment-specific requirements, or where no suitable hosted equivalent exists; preserve the local server/wrapper convention for those.
+- Prefer an existing supported hosted remote endpoint appropriate to the same target environment over the local gateway, and verify the exact endpoint in canonical config; do not construct a hostname. Retain the local gateway for workstation-local or environment-specific requirements, or where no suitable hosted equivalent exists. For those services, use an `mcp-gateway` `servers.json` entry on the next free 87xx localhost port and a POSIX `bin/<name>` wrapper when credentials are needed; client configs point at `http://127.0.0.1:<port>/mcp` (with `oauth: false` in OpenCode).
 - The fourteen direct Make IT Work Cloud entries are the established remote pattern, one per external endpoint at `https://mcp-<integration>.makeitwork.cloud/mcp`, with CF-Access headers from the environment: the eleven bare-named servers `apify`, `aws-docs`, `cloudflare`, `context7`, `gcp`, `kubernetes`, `parallel-search`, `playwright`, `slidespeak`, `terraform-docs`, and `twilio-docs`, plus the three prefixed collision names `makeitwork-argocd`, `makeitwork-aws`, and `makeitwork-grafana` (kept prefixed because bare `argocd`, `aws`, and `grafana` are taken by client integrations for other environments). The OAuth SaaS servers `linear` and `notion` are also established remote integrations. Do not add a second remote entry for a backend one of these direct endpoints already serves, and never inline a secret value — headers reference environment variables only.
 - Credentials for gateway wrappers come from `dotfiles` `encrypted_secrets.yaml.age` via `private_dot_shellenv.tmpl` (the `*_mcp_token` key convention); wrappers source `~/.shellenv` themselves. Secrets never appear in agent config repos.
 - Disable-by-default in the global `opencode.json` (`enabled: false`); projects opt in. Keep `opencode-llama` opted out of non-essential servers.
@@ -93,7 +93,7 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
   `search_queries`; make separate calls for separate questions instead of
   chaining searches.
 - Keep fetches in excerpt mode (leave `full_content` off) unless the entire
-  page is genuinely required; full-content fetches can exceed the
+  page is genuinely required; full-content fetches can exceed the context
   window.
 - Do not use parallel-search for AWS, Terraform, OpenTofu, or OpenCode
   documentation, GitHub repository content, or any source a dedicated MCP
