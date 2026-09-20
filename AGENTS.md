@@ -46,10 +46,10 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
 - For AWS, Terraform, and OpenTofu documentation, use the specialized tools instead: `aws-docs_*`,
   `terraform-docs_*`, and `opentofu-docs_*`. For OpenCode configuration, use the checked-in schema and repository validation.
 
-## MCP integration changes (gateway-first)
+## MCP integration changes (remote-first)
 
-- New MCP servers belong in the `mcp-gateway` repo (`servers.json` entry on the next free 87xx localhost port, plus a POSIX `bin/<name>` wrapper when the server needs credentials). Agent configs in `opencode-config`, `codex-config`, `claude-config`, and project `opencode.json` files then point at `http://127.0.0.1:<port>/mcp` with `oauth: false`.
-- The exceptions are the fourteen direct Make IT Work Cloud remote entries (one per external endpoint at `https://mcp-<integration>.makeitwork.cloud/mcp`, CF-Access headers from the environment): the eleven bare-named servers `apify`, `aws-docs`, `cloudflare`, `context7`, `gcp`, `kubernetes`, `parallel-search`, `playwright`, `slidespeak`, `terraform-docs`, and `twilio-docs`, plus the three prefixed collision names `makeitwork-argocd`, `makeitwork-aws`, and `makeitwork-grafana` (kept prefixed because bare `argocd`, `aws`, and `grafana` are taken by client integrations for other environments). The OAuth SaaS servers `linear` and `notion` are also exceptions. Do not add a second remote entry for a backend one of these direct endpoints already serves, and never inline a secret value — headers reference environment variables only.
+- Prefer an existing supported hosted remote endpoint appropriate to the SAME target environment over the local gateway, and verify the exact endpoint in canonical config; do not construct a hostname. Retain the local gateway for workstation-local or environment-specific requirements, or where no suitable hosted equivalent exists; preserve the local server/wrapper convention for those.
+- The fourteen direct Make IT Work Cloud entries are the established remote pattern, one per external endpoint at `https://mcp-<integration>.makeitwork.cloud/mcp`, with CF-Access headers from the environment: the eleven bare-named servers `apify`, `aws-docs`, `cloudflare`, `context7`, `gcp`, `kubernetes`, `parallel-search`, `playwright`, `slidespeak`, `terraform-docs`, and `twilio-docs`, plus the three prefixed collision names `makeitwork-argocd`, `makeitwork-aws`, and `makeitwork-grafana` (kept prefixed because bare `argocd`, `aws`, and `grafana` are taken by client integrations for other environments). The OAuth SaaS servers `linear` and `notion` are also established remote integrations. Do not add a second remote entry for a backend one of these direct endpoints already serves, and never inline a secret value — headers reference environment variables only.
 - Credentials for gateway wrappers come from `dotfiles` `encrypted_secrets.yaml.age` via `private_dot_shellenv.tmpl` (the `*_mcp_token` key convention); wrappers source `~/.shellenv` themselves. Secrets never appear in agent config repos.
 - Disable-by-default in the global `opencode.json` (`enabled: false`); projects opt in. Keep `opencode-llama` opted out of non-essential servers.
 - Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define (e.g. a project-local stdio server).
@@ -81,12 +81,9 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
 - Use `parallel-search_web_search` for general web discovery and current
   information — news, prices, listings, vendors, and similar open-web topics.
   "Current information" never includes library or framework documentation;
-  that belongs to Context7 regardless of how the question is phrased. Search
-  excerpts are usually sufficient; follow up with `parallel-search_web_fetch`
-  only when excerpts are truncated, conflicting, or exact wording is required.
-- Use `parallel-search_web_fetch` for known public URLs when context-mode is
-  unavailable or direct retrieval is sufficient. Always pass URLs the user
-  provides via the `urls` parameter (up to 20 per request).
+  that belongs to Context7 regardless of how the question is phrased.
+- Search excerpts are usually sufficient; follow up with
+  `parallel-search_web_fetch` only when excerpts are truncated, conflicting, or exact wording is required.
 - Generate one `session_id` per conversation (UUID or 32+ character hex) and
   reuse it for every parallel-search call; do not change it between turns.
 - Give each search call one atomic `objective` plus 2-3 concise related
@@ -94,7 +91,7 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
   chaining searches.
 - Keep fetches in excerpt mode (leave `full_content` off) unless the entire
   page is genuinely required; full-content fetches can exceed the context
-  window.
+  window between 20-30,000 characters.
 - Do not use parallel-search for AWS, Terraform, OpenTofu, or OpenCode
   documentation, GitHub repository content, or any source a dedicated MCP
   covers. Fetch public URLs only; never attach credentials or private URLs.
