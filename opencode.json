@@ -322,7 +322,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "cloudflare": {
+    "makeitwork-cloudflare": {
       "type": "remote",
       "url": "https://mcp-cloudflare.makeitwork.cloud/mcp",
       "enabled": true,
@@ -342,7 +342,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "gcp": {
+    "makeitwork-gcp": {
       "type": "remote",
       "url": "https://mcp-gcp.makeitwork.cloud/mcp",
       "enabled": true,
