@@ -81,17 +81,20 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
 - Use `parallel-search_web_search` for general web discovery and current
   information — news, prices, listings, vendors, and similar open-web topics.
   "Current information" never includes library or framework documentation;
-  that belongs to Context7 regardless of how the question is phrased.
-- Search excerpts are usually sufficient; follow up with
-  `parallel-search_web_fetch` only when excerpts are truncated, conflicting, or exact wording is required.
+  that belongs to Context7 regardless of how the question is phrased. Search
+  excerpts are usually sufficient; follow up with `parallel-search_web_fetch`
+  only when excerpts are truncated, conflicting, or exact wording is required.
+- Use `parallel-search_web_fetch` for known public URLs when context-mode is
+  unavailable or direct retrieval is sufficient. Always pass URLs the user
+  provides via the `urls` parameter (up to 20 per request).
 - Generate one `session_id` per conversation (UUID or 32+ character hex) and
   reuse it for every parallel-search call; do not change it between turns.
 - Give each search call one atomic `objective` plus 2-3 concise related
   `search_queries`; make separate calls for separate questions instead of
   chaining searches.
 - Keep fetches in excerpt mode (leave `full_content` off) unless the entire
-  page is genuinely required; full-content fetches can exceed the context
-  window between 20-30,000 characters.
+  page is genuinely required; full-content fetches can exceed the
+  window.
 - Do not use parallel-search for AWS, Terraform, OpenTofu, or OpenCode
   documentation, GitHub repository content, or any source a dedicated MCP
   covers. Fetch public URLs only; never attach credentials or private URLs.
