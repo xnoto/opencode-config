@@ -39,3 +39,9 @@ repos:
         additional_dependencies: [pyyaml]
         pass_filenames: false
         always_run: true
+      - id: check-opencode-mem-config
+        name: Validate opencode-mem safe defaults
+        entry: python3 scripts/check-opencode-mem-config.py
+        language: system
+        pass_filenames: false
+        always_run: true
