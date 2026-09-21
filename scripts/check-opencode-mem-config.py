@@ -17,6 +17,15 @@ EXPECTED = {
 }
 
 
+def is_disabled_block(value):
+    return (
+        isinstance(value, dict)
+        and set(value) == {"enabled"}
+        and type(value["enabled"]) is bool
+        and value["enabled"] is False
+    )
+
+
 def main():
     try:
         config = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
@@ -29,15 +38,19 @@ def main():
 
     errors = []
     for key, expected in EXPECTED.items():
-        if config.get(key) != expected:
-            errors.append(f"{key} must be {expected!r}, got {config.get(key)!r}")
+        actual = config.get(key)
+        if type(expected) is bool:
+            valid = type(actual) is bool and actual is expected
+        else:
+            valid = actual == expected
+        if not valid:
+            errors.append(f"{key} must be {expected!r}, got {actual!r}")
 
     if config.get("memory") != {"defaultScope": "project"}:
         errors.append("memory must be {'defaultScope': 'project'}")
-    if config.get("chatMessage") != {"enabled": False}:
-        errors.append("chatMessage must be {'enabled': False}")
-    if config.get("compaction") != {"enabled": False}:
-        errors.append("compaction must be {'enabled': False}")
+    for key in ("chatMessage", "compaction"):
+        if not is_disabled_block(config.get(key)):
+            errors.append(f"{key} must be {{'enabled': False}}")
 
     if errors:
         print("opencode-mem safe-default validation failed:", file=sys.stderr)
