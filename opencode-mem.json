@@ -1,0 +1,16 @@
+{
+  "storagePath": "~/.opencode-mem/data",
+  "embeddingModel": "Xenova/nomic-embed-text-v1",
+  "memory": {
+    "defaultScope": "project"
+  },
+  "autoCaptureEnabled": false,
+  "injectProfile": false,
+  "webServerEnabled": false,
+  "chatMessage": {
+    "enabled": false
+  },
+  "compaction": {
+    "enabled": false
+  }
+}
