@@ -435,6 +435,18 @@
       "url": "https://mcp.opentofu.org/mcp",
       "enabled": true
     },
+    "kubernetes-staging-eks": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8772/mcp",
+      "enabled": true,
+      "oauth": false
+    },
+    "kubernetes-prod-eks": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8773/mcp",
+      "enabled": true,
+      "oauth": false
+    },
     "argocd-staging-eks": {
       "type": "remote",
       "url": "http://127.0.0.1:8774/mcp",
