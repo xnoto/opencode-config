@@ -412,16 +412,6 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "twilio-docs": {
-      "type": "remote",
-      "url": "https://mcp-twilio-docs.makeitwork.cloud/mcp",
-      "enabled": true,
-      "oauth": false,
-      "headers": {
-        "CF-Access-Client-Id": "{env:CF_ACCESS_CLIENT_ID}",
-        "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
-      }
-    },
     "grafana": {
       "type": "remote",
       "url": "http://127.0.0.1:8768/mcp",
