@@ -162,12 +162,12 @@
     "makeitwork-grafana_tempo_traceql-metrics-instant": "allow",
     "makeitwork-grafana_tempo_traceql-metrics-range": "allow",
     "makeitwork-grafana_tempo_traceql-search": "allow",
-    "kubernetes_kubectl_describe": "allow",
-    "kubernetes_kubectl_get": "allow",
-    "kubernetes_kubectl_logs": "allow",
-    "kubernetes_explain_resource": "allow",
-    "kubernetes_list_api_resources": "allow",
-    "kubernetes_ping": "allow",
+    "makeitwork-kubernetes_kubectl_describe": "allow",
+    "makeitwork-kubernetes_kubectl_get": "allow",
+    "makeitwork-kubernetes_kubectl_logs": "allow",
+    "makeitwork-kubernetes_explain_resource": "allow",
+    "makeitwork-kubernetes_list_api_resources": "allow",
+    "makeitwork-kubernetes_ping": "allow",
     "linear_extract_images": "allow",
     "linear_get_attachment": "allow",
     "linear_get_document": "allow",
@@ -240,7 +240,7 @@
     "todowrite": "allow",
     "webfetch": "allow",
     "websearch": "allow",
-    "kubernetes_*": "allow"
+    "makeitwork-kubernetes_*": "allow"
   },
   "agent": {
     "plan": {
@@ -362,7 +362,7 @@
         "CF-Access-Client-Secret": "{env:CF_ACCESS_CLIENT_SECRET}"
       }
     },
-    "kubernetes": {
+    "makeitwork-kubernetes": {
       "type": "remote",
       "url": "https://mcp-kubernetes.makeitwork.cloud/mcp",
       "enabled": true,
