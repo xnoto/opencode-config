@@ -427,7 +427,7 @@
     "codebase-memory": {
       "type": "remote",
       "url": "http://127.0.0.1:8771/mcp",
-      "enabled": false,
+      "enabled": true,
       "oauth": false
     },
     "opentofu-docs": {
