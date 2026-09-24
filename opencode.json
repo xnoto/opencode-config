@@ -1,22 +1,16 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": true,
-  "model": "amazon-bedrock/global.anthropic.claude-opus-4-6-v1",
+  "model": "openai/gpt-6-sol",
   "plugin": [
     "opencode-antigravity-auth",
     "opencode-mem",
     "opencode-models-discovery",
     "opencode-auto-model-config",
-    "@rama_nigg/open-cursor@2.5.7",
+    "@rama_nigg/open-cursor@2.5.8",
     "context-mode"
   ],
   "provider": {
-    "amazon-bedrock": {
-      "options": {
-        "region": "us-west-2",
-        "profile": "opencode-bedrock"
-      }
-    },
     "cursor-acp": {
       "name": "Cursor ACP",
       "npm": "@ai-sdk/openai-compatible",
