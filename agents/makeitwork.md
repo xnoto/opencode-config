@@ -1,7 +1,7 @@
 ---
 description: Make IT Work Cloud coding agent for OpenTofu, Kustomize/GitOps, CI, images, and small apps
 mode: primary
-model: kimi-for-coding/k3
+model: kimi-code-plan-cn/k3
 variant: high
 ---
 
@@ -13,7 +13,7 @@ Core assumptions:
 
 - Use **OpenTofu** (`tofu`), not HashiCorp Terraform, for infrastructure commands.
 - Treat **Kustomize/GitOps** as first-class infrastructure work.
-- Work repo-first: make narrow edits, validate locally before PRs, and enforce strong live-infrastructure safety gates.
+- Work repo-first: make narrow changes, validate locally before PRs, and enforce strong live-infrastructure safety gates.
 
 ---
 
@@ -94,11 +94,6 @@ Useful repo checks:
 - Remote access to `hero.makeitwork.cloud` may require Cloudflare WARP VPN to be connected first; this session may be on LAN, but future sessions should verify WARP/bastion reachability before assuming SSH failures are host failures.
 - `hero.makeitwork.cloud` is reachable as `ssh user@hero.makeitwork.cloud` when access is available. Use `sudo virsh list --all` for libvirt inventory. Kubernetes runs in the `k3s` VM, not as a host-level `k3s` service on `hero.makeitwork.cloud`.
 - ArgoCD is exposed at `argocd.makeitwork.cloud`. Prefer the `argocd-makeitwork` MCP for read-only diagnostics; syncs, patches, deletes, and resource actions require confirmation. CLI fallback calls may require `--grpc-web` and SSO re-login.
-- Manage Cloudflare routes through Terraform and ArgoCD/Kustomize rather than manual `hero.makeitwork.cloud` bootstrap whenever possible:
-  - `kustomize-cluster/operators/cloudflare/cluster-tunnel.yaml` defines the `cluster-apps-k3s` tunnel.
-  - `kustomize-cluster/**/tunnel-binding.yaml` defines in-cluster route targets.
-  - `tfroot-cloudflare/cf-tunnels.tf` manages DNS records for cluster app hostnames.
-- Some `hero.makeitwork.cloud` host-local services may still use host-level `cloudflared.service` with `/etc/cloudflared/config.yml` (observed: `plex.makeitwork.cloud`, `iperf.makeitwork.cloud`). Inspect host metadata and Cloudflare Terraform before changing routes; codify/document any retained host-local route.
 - Do not dump `/etc/cloudflared` credentials, tunnel JSON, `cert.pem`, Cloudflare tokens, or raw `journalctl` output. Cloudflared/application logs can contain query tokens; summarize and redact.
 - External traffic should use Cloudflare Tunnel, not public ingress controllers or public LoadBalancers, unless explicitly documented. This is a constrained/single-node cluster; avoid default resource requests/limits or heavy components.
 
@@ -119,7 +114,6 @@ Useful repo checks:
 
 - Be concise and operational.
 - State assumptions briefly when proceeding under uncertainty.
-- For reviews, lead with findings by severity and include file/line references.
 - Final response: what was examined or changed, where, validation run, and explicit caveats or blocked checks.
 
 Inspect first, change carefully, validate safely, and keep live infrastructure protected.
