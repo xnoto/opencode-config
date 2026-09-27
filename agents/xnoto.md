@@ -31,7 +31,7 @@ Work primarily in `~/git/xnoto`. Classify the active repo before editing:
 - `brewfile`: macOS Homebrew package manifest. `make`/`make check` validate, `make install` installs packages, and `make sync` regenerates from the current machine.
 - App/utility repos such as `herofand`, `llama-hero`, `messaging-service`, and `xbox-media-utils` are normal independent repos; inspect their local docs and tooling before changing them.
 
-When a requested change mentions an installed path like `~/.config/opencode/agents/foo.md`, map it back to the repo that owns it before editing. If the installed path is a chezmoi external git repo, edit that external repo; commit or push from that repo only when the user explicitly requests it. Do not bury the change inside `dotfiles` unless `.chezmoiexternal.toml.tmpl` or related dotfiles source changed.
+When a requested change mentions an installed path like `~/.config/opencode/agents/foo.md`, map it back to the repo that owns it before editing. If the installed path is a chezmoi external git repo, edit that external repo; commit or push from that repo only when the user explicitly requests it. Do not bury the change inside `dotfiles` unless the external mapping itself needs to change.
 
 Repo-root `opencode.json` files are project-scoped overlays, not copies of the global config. OpenCode deep-merges them over `opencode-config/opencode.json`. Inherited MCP overrides must use the exact configured server key, and tool rules must use the matching `<server>_*` namespace. Compare the canonical global and project files first. `opencode mcp list` initializes configured servers and may make network requests, use credentials, or write caches; run it only when those effects are acceptable. Plugins can add servers that are absent from the static `mcp` object. When a global MCP is renamed, audit every `~/git/xnoto/*/opencode.json` for the old server key and tool namespace.
 
@@ -39,7 +39,7 @@ Repo-root `opencode.json` files are project-scoped overlays, not copies of the g
 
 ## Standard Workflow
 
-1. Read the repo-local guidance and tooling relevant to the task when present, such as `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/manifests when present.
+1. Read the repo-local guidance and tooling relevant to the task when present, such as `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/config files.
 2. Identify whether the file is chezmoi source, a chezmoi external, a generated/rendered home file, a package manifest, or application code.
 3. Check `git status --short --branch` in the specific repo before editing. Treat each sibling directory as its own repo with its own branch, status, remote, CI, and push target.
 4. Before committing, inspect local branch guards such as `no-commit-to-branch` and current remote branch rules. Start a feature branch when `main` is guarded rather than waiting for a rejected commit or push.
@@ -47,7 +47,7 @@ Repo-root `opencode.json` files are project-scoped overlays, not copies of the g
 6. Implement narrowly. Avoid moving ownership between repos unless the user's request is explicitly about repo boundaries or installation flow.
 7. Add source comments or docstrings only when required by repo convention, needed to explain a security exception, or necessary because the code is not self-explanatory and omission would mislead a maintainer. Explain why, not what; do not comment unchanged or obvious code.
 8. Validate with the safest repo-native command. If validation is blocked by missing tools, credentials, SOPS age keys, platform mismatch, or network access, say exactly what was not run.
-9. Before any requested commit or push, first check every repo-local pre-commit hook revision and comparable pinned validation/tooling dependency for available updates. Apply compatible updates with the repo-native procedure, include the resulting config, lockfile, and generated-file changes in the commit being pushed, and rerun the repo-native checks until clean. Respect canonical ownership and cross-repo boundaries: if a pin is owned by a sibling config/tooling repo, update and validate it there rather than copying it into the current repo.
+9. Before any requested commit or push, first check every repo-local pre-commit hook revision and comparable pinned validation/tooling dependency for available updates. Apply compatible updates with the repo-native procedure, include the resulting config, lockfile, and generated-file changes in the commit being pushed, and rerun the checks until clean. Respect canonical ownership and cross-repo boundaries: if a pin is owned by a sibling config/tooling repo, update and validate it there rather than copying it into the current repo.
 10. Recheck `git status` and the diff after validation. Linters and package tools may rewrite tracked files; never include those changes silently.
 
 For cross-repo work, summarize the intended order before changing files: source repo edit, validation, optional apply/install, then optional commit/push for each affected repo.
@@ -95,7 +95,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 - `opencode-config`: inspect `.pre-commit-config.yaml` and `.github/workflows/lint.yaml`; run `pre-commit run --all-files` when edits are allowed. These hooks check syntax and repository hygiene, not OpenCode agent semantics or the full runtime schema, so validate those separately with the OpenCode schema and documented runtime behavior.
 - `mcp-gateway`: `make` or `make check` runs repository hygiene, secret detection, ShellCheck, JSON parsing, and Node syntax checks. Runtime health checks additionally require the installed checkout, credentials, packages, VPN access, and the platform service.
 - `brewfile`: `make` or `make check` for validation; avoid `make install` and `make sync` unless confirmed.
-- Other repos: inspect local docs/tooling first and run the narrowest relevant check.
+- Other repos: inspect repo-local docs/tooling first and run the narrowest relevant check.
 
 ---
 
