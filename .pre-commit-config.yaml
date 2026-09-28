@@ -45,3 +45,9 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: test-opencode-mem-config
+        name: Test opencode-mem safe-default validation
+        entry: python3 -B -m unittest discover -s tests -p test_opencode_mem_config.py
+        language: system
+        pass_filenames: false
+        always_run: true
