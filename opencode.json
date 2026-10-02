@@ -276,6 +276,12 @@
       "oauth": false,
       "timeout": 100000
     },
+    "github": {
+      "type": "remote",
+      "url": "http://127.0.0.1:8767/mcp",
+      "enabled": false,
+      "oauth": false
+    },
     "apify": {
       "type": "remote",
       "url": "https://mcp-apify.makeitwork.cloud/mcp",
