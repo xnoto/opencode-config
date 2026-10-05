@@ -60,3 +60,10 @@ repos:
         additional_dependencies: [json5==0.15.0]
         pass_filenames: false
         always_run: true
+      - id: test-agent-frontmatter
+        name: Test agent frontmatter and specialist roster
+        entry: python -B -m unittest discover -s tests -p test_agent_frontmatter.py
+        language: python
+        additional_dependencies: [pyyaml]
+        pass_filenames: false
+        always_run: true

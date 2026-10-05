@@ -29,6 +29,7 @@ ALLOWED_FRONTMATTER_KEYS = {
     "steps",
     "options",
     "permission",
+    "permissions",
     "disable",
     "temperature",
     "top_p",
@@ -97,6 +98,30 @@ def check_permission(location, permission):
             fail(location, f"permission.{tool} must be a string action or a pattern mapping")
 
 
+def check_permissions(location, permissions):
+    if not isinstance(permissions, list):
+        fail(location, "permissions must be a list of rule mappings")
+        return
+    fields = {"action", "resource", "effect"}
+    for index, rule in enumerate(permissions):
+        label = f"permissions[{index}]"
+        if not isinstance(rule, dict):
+            fail(location, f"{label} must be a mapping")
+            continue
+        unknown = sorted(set(rule) - fields, key=str)
+        missing = sorted(fields - set(rule))
+        if unknown:
+            fail(location, f"{label} has unknown rule fields {unknown}")
+        if missing:
+            fail(location, f"{label} is missing rule fields {missing}")
+        for key in fields:
+            if key in rule and (not isinstance(rule[key], str) or not rule[key].strip()):
+                fail(location, f"{label}.{key} must be a nonempty string")
+        effect = rule.get("effect")
+        if isinstance(effect, str) and effect not in VALID_PERMISSION_ACTIONS:
+            fail(location, f"{label}.effect must be allow, ask, or deny")
+
+
 def check_agent_file(path):
     location = path.relative_to(REPO_ROOT)
     frontmatter, error = parse_frontmatter(path)
@@ -124,8 +149,12 @@ def check_agent_file(path):
     if steps is not None and (not isinstance(steps, int) or isinstance(steps, bool) or steps < 1):
         fail(location, f"steps must be a positive integer, got {steps!r}")
 
+    if "permission" in frontmatter and "permissions" in frontmatter:
+        fail(location, "both legacy permission and native permissions are set; use one format per agent")
     if "permission" in frontmatter:
         check_permission(location, frontmatter["permission"])
+    if "permissions" in frontmatter:
+        check_permissions(location, frontmatter["permissions"])
 
     return {
         "name": frontmatter.get("name", path.stem),
