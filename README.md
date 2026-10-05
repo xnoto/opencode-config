@@ -44,7 +44,7 @@ The new definitions target [OpenCode V2](https://opencode.ai/v2/docs/agents), wi
 resource. They have no model pin. They consume supplied evidence only and do not
 load skills or call tools, even when ambient instructions normally route to them.
 
-Existing legacy definitions and `opencode.json` remain unchanged apart from the
+Existing legacy definitions and `opencode.jsonc` remain unchanged apart from the
 renamed reviewer reference. V2 [supports legacy definitions](https://opencode.ai/v2/docs/migrate-v1);
 the new V2 permission shape must not be used with V1, which may ignore its denies.
 Installed client version and effective project overrides are separate verification
