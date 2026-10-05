@@ -112,3 +112,39 @@ Each integration is its own server entry again, so `mcp.<server>.enabled` can en
 - Do not use parallel-search for AWS, Terraform, OpenTofu, or OpenCode
   documentation, GitHub repository content, or any source a dedicated MCP
   covers. Fetch public URLs only; never attach credentials or private URLs.
+
+## Bounded specialist delegation
+
+Use the following supplied-material subagents selectively; do not run the whole
+roster for every change:
+
+- `adversarial-code-reviewer`: independent review of a completed non-trivial
+  implementation before opening its PR, or an explicitly requested second opinion.
+- `qa-engineer`: acceptance-to-check coverage, concrete test cases, and
+  documentation adequacy; it does not implement tests or execute checks.
+- `docs-writer`: standalone README, guide, and release-note drafting from
+  supplied sources; not agent instructions, skills, policies, or knowledge bases.
+- `infra-security-reviewer`: infrastructure-diff security review of privileges,
+  secret handling, exposure, and supply-chain boundaries; never secret values.
+- `devops-engineer`: DESIGN or CHANGE review of CI, workflow, artifact, runner,
+  and delivery integration contracts; not implementation or live operations.
+- `release-engineer`: versions, pins, generated copies, release documentation,
+  and downstream stages against the actual repository release contract.
+- `cloud-architecture-reviewer`: before implementing a new cloud service or
+  material topology, state, recovery, scaling, service-selection, or cost change.
+
+The primary gathers and supplies the complete relevant evidence, acceptance
+criteria, repository guidance, producer-consumer context, and validation status.
+These seven agents do not retrieve sources or load skills: their supplied-material
+contract takes precedence over task-related tool/skill routing in this file.
+Keep universal safety constraints, and never supply prohibited secret or state
+material. Use fresh reviewer context, not a full-history fork of the authoring
+session. Missing essential evidence must produce HOLD or BLOCKED, not invented
+facts. Resolve Critical/High findings or obtain an explicit owner waiver; do not
+treat a verdict as merge, publication, deployment, or runtime authorization.
+The primary retains implementation, knowledge maintenance, and final decisions.
+
+If native agent discovery is unavailable, report that limitation; do not pretend
+a named independent review occurred or silently install/repair the client.
+Models are inherited unless explicitly selected by the caller. Do not substitute
+provider aliases for specialist roles.
