@@ -4,8 +4,7 @@
   "model": "openai/gpt-6-sol",
   "plugin": [
     "opencode-mem",
-    "opencode-models-discovery",
-    "@rama_nigg/open-cursor@2.5.11"
+    "opencode-models-discovery"
   ],
   "provider": {
     "cursor-acp": {
