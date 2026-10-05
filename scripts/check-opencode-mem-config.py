@@ -6,10 +6,11 @@ import stat
 import sys
 from pathlib import Path
 
+import json5
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
-CONFIG_NAME = "opencode-mem.json"
+CONFIG_NAMES = ("opencode-mem.json", "opencode-mem.jsonc")
 FORBIDDEN_CONFIG_PATHS = (
-    "opencode-mem.jsonc",
     ".opencode/opencode-mem.json",
     ".opencode/opencode-mem.jsonc",
 )
@@ -33,13 +34,13 @@ def is_disabled_block(value):
     )
 
 
-def validate_config(config):
+def validate_config(config, config_name="opencode-mem config"):
     if not isinstance(config, dict):
-        return [f"{CONFIG_NAME} must contain a JSON object"]
+        return [f"{config_name} must contain a JSON object"]
 
     errors = []
     if set(config) - ALLOWED_KEYS:
-        errors.append(f"{CONFIG_NAME} contains unapproved top-level settings")
+        errors.append(f"{config_name} contains unapproved top-level settings")
     for key, expected in EXPECTED.items():
         actual = config.get(key)
         if type(expected) is bool:
@@ -62,34 +63,44 @@ def validate_repository(repo_root):
     for relative_path in FORBIDDEN_CONFIG_PATHS:
         path = repo_root / relative_path
         if path.exists() or path.is_symlink():
-            errors.append(f"{relative_path} is not allowed to shadow or override {CONFIG_NAME}")
+            errors.append(f"{relative_path} is not allowed to shadow or override opencode-mem config")
+    if errors:
+        return errors
 
-    config_file = repo_root / CONFIG_NAME
+    candidates = [repo_root / name for name in CONFIG_NAMES]
+    present = [path for path in candidates if path.exists() or path.is_symlink()]
+    if len(present) > 1:
+        return errors + ["multiple opencode-mem config files are not allowed"]
+    if not present:
+        return errors + ["missing opencode-mem config (expected opencode-mem.json or opencode-mem.jsonc)"]
+
+    config_file = present[0]
+    config_name = config_file.name
     try:
         if not stat.S_ISREG(config_file.lstat().st_mode):
-            errors.append(f"{CONFIG_NAME} must be a regular file, not a symlink or special file")
+            errors.append(f"{config_name} must be a regular file, not a symlink or special file")
             return errors
-        config = json.loads(config_file.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        errors.append(f"missing {CONFIG_NAME}")
-    except (json.JSONDecodeError, UnicodeError):
-        errors.append(f"{CONFIG_NAME} must contain valid UTF-8 JSON")
+        text = config_file.read_text(encoding="utf-8")
+        if config_file.suffix == ".jsonc":
+            config = json5.loads(text, allow_duplicate_keys=False)
+        else:
+            config = json.loads(text)
+    except (json.JSONDecodeError, ValueError, UnicodeError):
+        errors.append(f"{config_name} must contain valid UTF-8 JSON/JSONC")
     except OSError:
-        errors.append(f"could not read {CONFIG_NAME}")
+        errors.append(f"could not read {config_name}")
     else:
-        errors.extend(validate_config(config))
+        errors.extend(validate_config(config, config_name))
     return errors
 
 
 def main(repo_root=REPO_ROOT):
     errors = validate_repository(repo_root)
-
     if errors:
         print("opencode-mem safe-default validation failed:", file=sys.stderr)
         for error in errors:
             print(f"  {error}", file=sys.stderr)
         return 1
-
     print("opencode-mem safe-default validation passed.")
     return 0
 

@@ -26,9 +26,16 @@ repos:
     rev: 0.38.2
     hooks:
       - id: check-jsonschema
-        name: Validate opencode.json against the upstream OpenCode schema
-        args: ["--schemafile", "https://opencode.ai/config.json"]
-        files: ^opencode\.json$
+        name: Validate OpenCode config against the upstream OpenCode schema
+        additional_dependencies: [json5==0.15.0]
+        args: ["--schemafile", "https://opencode.ai/config.json", "--force-filetype", "json5"]
+        files: ^opencode\.jsonc?$
+        types: [file]
+        types_or: [file]
+      - id: check-jsonschema
+        name: Validate OpenCode CLI config against the upstream V2 schema
+        args: ["--schemafile", "https://opencode.ai/v2/cli.json"]
+        files: ^cli\.json$
 
   - repo: local
     hooks:
@@ -41,13 +48,15 @@ repos:
         always_run: true
       - id: check-opencode-mem-config
         name: Validate opencode-mem safe defaults
-        entry: python3 scripts/check-opencode-mem-config.py
-        language: system
+        entry: python scripts/check-opencode-mem-config.py
+        language: python
+        additional_dependencies: [json5==0.15.0]
         pass_filenames: false
         always_run: true
       - id: test-opencode-mem-config
         name: Test opencode-mem safe-default validation
-        entry: python3 -B -m unittest discover -s tests -p test_opencode_mem_config.py
-        language: system
+        entry: python -B -m unittest discover -s tests -p test_opencode_mem_config.py
+        language: python
+        additional_dependencies: [json5==0.15.0]
         pass_filenames: false
         always_run: true
