@@ -194,7 +194,8 @@ class JsoncMemoryConfigTests(MemoryConfigTests):
     config_name = "opencode-mem.jsonc"
 
     def test_jsonc_comments_trailing_commas_and_comment_like_strings(self):
-        text = r'''{
+        probe = 'String has // and /* markers; quote: "' + chr(92) + ' backslashes: ' + chr(92) * 2
+        text = '''{
           // Line comment with /* block-looking text */
           "storagePath": "~/.opencode-mem/data",
           "embeddingModel": "Xenova/nomic-embed-text-v1",
@@ -204,13 +205,13 @@ class JsoncMemoryConfigTests(MemoryConfigTests):
           "webServerEnabled": false,
           "chatMessage": {"enabled": false,},
           "compaction": {"enabled": false,},
-          "probe": "String has // and /* comment markers; escaped quote: \"; backslashes: \\",
-        }'''
+          "probe": PROBE,
+        }'''.replace("PROBE", json.dumps(probe))
         self.config_file.write_text(text, encoding="utf-8")
         captured = []
         with mock.patch.object(validator, "validate_config", side_effect=lambda value, name: captured.append(value) or []):
             self.assertEqual(validator.validate_repository(self.root), [])
-        self.assertEqual(captured[0]["probe"], 'String has // and /* comment markers; escaped quote: \"; backslashes: \\\\")
+        self.assertEqual(captured[0]["probe"], probe)
 
     def test_jsonc_enabled_automation_is_rejected_through_repository_parser(self):
         text = json.dumps({**VALID_CONFIG, "autoCaptureEnabled": True})
