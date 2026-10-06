@@ -142,7 +142,7 @@ material. Use fresh reviewer context, not a full-history fork of the authoring
 session. Missing essential evidence must produce HOLD or BLOCKED, not invented
 facts. Resolve Critical/High findings or obtain an explicit owner waiver; do not
 treat a verdict as merge, publication, deployment, or runtime authorization.
-The primary retains implementation, knowledge maintenance, and final decisions.
+The primary retains implementation and final decisions.
 
 If native agent discovery is unavailable, report that limitation; do not pretend
 a named independent review occurred or silently install/repair the client.
