@@ -31,8 +31,8 @@ Each config repository owns its copies; no generator or automatic synchronizatio
 was introduced. The source chart, MCP endpoints, packages, and primary model
 settings are unchanged.
 
-`adversarial-code-reviewer` replaces `bullshit-detector`, including its reference
-in `agents/claude.md`. The existing primary agents, `security-auditor`,
+`adversarial-code-reviewer` replaces `bullshit-detector`. The Claude primary
+agent has been removed; the remaining primary agents, `security-auditor`,
 `observability-debugger`, and provider-routing aliases are otherwise retained.
 The security auditor handles broader repository/chezmoi hygiene; the infrastructure
 reviewer assesses a supplied infrastructure diff.
@@ -44,8 +44,7 @@ The new definitions target [OpenCode V2](https://opencode.ai/v2/docs/agents), wi
 resource. They have no model pin. They consume supplied evidence only and do not
 load skills or call tools, even when ambient instructions normally route to them.
 
-Existing legacy definitions and `opencode.jsonc` remain unchanged apart from the
-renamed reviewer reference. V2 [supports legacy definitions](https://opencode.ai/v2/docs/migrate-v1);
+Remaining legacy definitions and `opencode.jsonc` are unchanged. V2 [supports legacy definitions](https://opencode.ai/v2/docs/migrate-v1);
 the new V2 permission shape must not be used with V1, which may ignore its denies.
 Installed client version and effective project overrides are separate verification
 gates, not facts established by this repository.

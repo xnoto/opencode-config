@@ -112,7 +112,12 @@ class SpecialistRosterTests(unittest.TestCase):
 
     def test_old_reviewer_removed(self):
         self.assertFalse((ROOT / "agents/bullshit-detector.md").exists())
-        self.assertNotIn("bullshit-detector", (ROOT / "agents/claude.md").read_text(encoding="utf-8"))
+        for path in (ROOT / "agents").glob("*.md"):
+            with self.subTest(agent=path.name):
+                self.assertNotIn("bullshit-detector", path.read_text(encoding="utf-8"))
+
+    def test_claude_agent_removed(self):
+        self.assertFalse((ROOT / "agents/claude.md").exists())
 
 
 if __name__ == "__main__":
