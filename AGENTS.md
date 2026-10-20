@@ -18,6 +18,29 @@ Select by the named target environment. If it is unspecified, ask before queryin
 
 Each integration is its own server entry again, so `mcp.<server>.enabled` can enable or disable it individually per project or profile — for example `mcp.apify.enabled` or `mcp.makeitwork-grafana.enabled`; the former aggregate `makeitwork` entry no longer exists. A project or profile can still deny one integration's tools instead: `"tools": { "apify_*": false }`.
 
+## GitHub API routing and authentication
+
+- Prefer the dedicated GitHub MCP tools for repository content and GitHub operations. Discover the available tools before concluding that an endpoint is missing; use the MCP identity tool before GitHub searches or writes. Do not infer CLI identity or repository access from MCP access: they can use different credentials.
+- If MCP lacks the required read endpoint (for example, Actions run listing), a read-only workstation CLI fallback is allowed only when higher-priority instructions and tool permissions permit it. Use a short, transparent `gh api` command through the shell tool, not context-mode, inline HTTP, or another transport. This narrow exception to context-mode output routing does not authorize GitHub writes or override an MCP-only environment.
+- Keep MCP and CLI authentication separate. Never inject `GITHUB_MCP_TOKEN` into `gh` or retrieve/print token values. When the owner requests omission of `GITHUB_TOKEN`, use `env -u GITHUB_TOKEN gh ...` for that process only; do not edit shell profiles, credential stores, or the parent OpenCode environment. This leaves `GH_TOKEN` in effect if set, otherwise `gh` may use stored authentication; it does not guarantee a particular identity or sufficient access.
+- For REST reads, specify `--method GET` explicitly when passing `-f`/`-F` parameters: adding fields otherwise changes `gh api`'s default method to POST. Name the owner/repository explicitly, filter by the exact commit SHA when validating a PR, bound the page size, and select only needed fields with `--jq`. Follow pagination when needed; a bounded first page is not an exhaustive result.
+- A shell permission denial is not a GitHub authentication failure. Stop and report the denied operation; never switch to context-mode, HTTP, SSH, another credential, or a wrapper to evade it. If the permission system supports approval, show the exact read-only retry, target, authentication omission, and expected side effects, then request approval. Execute only that approved retry through the normal tool permission gate. Chat approval does not override a hard deny or higher-priority policy; if still denied, report the remaining validation as blocked.
+- An actual GitHub authentication/authorization failure does not authorize credential switching. Ask for the intended authentication route rather than trying token variables or logins. Never claim the parent environment was unset by a child command.
+- Report CI evidence for the exact SHA and named workflow. Successful notification or assignment workflows do not establish that tests passed; distinguish source review, CI validation, installation, and functional verification.
+
+Example read-only fallback, only after the routing and permission checks above
+(replace `OWNER`, `REPO`, and `COMMIT_SHA` with verified targets):
+
+```sh
+env -u GITHUB_TOKEN gh api --hostname github.com --method GET \
+  repos/OWNER/REPO/actions/runs \
+  -f head_sha=COMMIT_SHA -f per_page=10 \
+  --jq '.workflow_runs[] | {id,name,event,status,conclusion,head_sha,run_attempt,html_url}'
+```
+
+References: [gh api](https://cli.github.com/manual/gh_api) and
+[gh environment](https://cli.github.com/manual/gh_help_environment).
+
 ## context-mode routing
 
 - Use `context-mode` whenever it is available to protect the context window.
