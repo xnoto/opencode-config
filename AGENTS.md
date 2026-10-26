@@ -18,6 +18,10 @@ Select by the named target environment. If it is unspecified, ask before queryin
 
 Each integration is its own server entry again, so `mcp.<server>.enabled` can enable or disable it individually per project or profile — for example `mcp.apify.enabled` or `mcp.makeitwork-grafana.enabled`; the former aggregate `makeitwork` entry no longer exists. A project or profile can still deny one integration's tools instead: `"tools": { "apify_*": false }`.
 
+## GitHub CI routing
+
+Prefer the GitHub MCP Actions readers (`actions_list`, `actions_get`) for CI on this workstation. The gateway uses a fine-grained PAT and owns its credentials; do not export or swap tokens to work around access failures.
+
 ## context-mode routing
 
 - Use `context-mode` whenever it is available to protect the context window.

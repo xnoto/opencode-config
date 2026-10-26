@@ -17,7 +17,7 @@ repos:
         args: ['--baseline', '.secrets.baseline']
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.19.0
+    rev: v4.19.3
     hooks:
       - id: commitizen
         stages: [commit-msg]
@@ -27,8 +27,8 @@ repos:
     hooks:
       - id: check-jsonschema
         name: Validate OpenCode config against the upstream OpenCode schema
-        additional_dependencies: [json5==0.15.0]
-        args: ["--schemafile", "https://opencode.ai/config.json", "--force-filetype", "json5"]
+        additional_dependencies: [json5==0.17.3]
+        args: ["--no-cache", "--schemafile", "https://opencode.ai/config.json", "--force-filetype", "json5"]
         files: ^opencode\.jsonc?$
         types: [file]
         types_or: [file]
@@ -50,14 +50,14 @@ repos:
         name: Validate opencode-mem safe defaults
         entry: python scripts/check-opencode-mem-config.py
         language: python
-        additional_dependencies: [json5==0.15.0]
+        additional_dependencies: [json5==0.17.3]
         pass_filenames: false
         always_run: true
       - id: test-opencode-mem-config
         name: Test opencode-mem safe-default validation
         entry: python -B -m unittest discover -s tests -p test_opencode_mem_config.py
         language: python
-        additional_dependencies: [json5==0.15.0]
+        additional_dependencies: [json5==0.17.3]
         pass_filenames: false
         always_run: true
       - id: test-agent-frontmatter
