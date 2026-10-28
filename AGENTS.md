@@ -1,12 +1,48 @@
 # AGENTS.md
 
+## Source selection (all tool-capable agents)
+
+Select the source before choosing how to reduce its output. This table is the
+shared routing contract for primary agents and tool-capable subagents; skills
+must not replace it with a different search order. Use tools when evidence is
+needed, not merely because an integration is available.
+
+| Task | First route |
+| --- | --- |
+| General public-web discovery, news, prices, comparisons, or current information | `parallel-search` `web_search` |
+| Library/framework documentation, setup, API syntax, or examples | `context7`: resolve the library ID, then query docs |
+| AWS / Terraform / OpenTofu documentation | `aws-docs` / `terraform-docs` / `opentofu-docs`, respectively |
+| OpenCode behavior or configuration | Load the `opencode` skill; use official V2 docs and repository validation |
+| Remote GitHub repository content, issues, PRs, releases, or CI | `github`; use Actions readers for CI |
+| Internal decisions, discussions, or tickets | `notion` search plus connector search for discussions; `linear` for tickets |
+| Substantial analysis of a known public page | `context-mode` fetch/index, then search the indexed source |
+| Focused excerpts from a known public URL | `parallel-search` `web_fetch` |
+| Browser interaction or a JavaScript-rendered page | `playwright`; retain approval gates for writes/uploads |
+| Structured listing extraction unavailable through normal research | `apify`, subject to the paid-extraction rules below |
+| Live cloud, cluster, or observability state | The named environment's MCPs below; clarify an unspecified target |
+| Local repository discovery / large local analysis | Native file tools or an available `codebase-memory` index / `context-mode`, respectively |
+| Presentation generation / terminal-session interaction | `slidespeak` / `tmux`, only for the requested task and with applicable approvals |
+
+For general public-web discovery, use parallel-search `web_search` first. Do not
+silently substitute built-in `websearch`, `webfetch`, browser search, or shell
+HTTP. Dedicated documentation and workspace routes above take precedence for
+their domains, including questions phrased as "latest" or "current".
+
+If the selected integration is absent or fails, report the limitation. Before
+using built-in `websearch` or `webfetch` as a fallback, request explicit approval
+and respect the tool's permission gate. A denied tool is not permission to try
+another transport. No environment clarification is needed for public research;
+clarify only when the resource target or account is ambiguous.
+
 ## Required skill loading
 
 - If the `skill` tool is available, agents must load the `context-mode` and `context7` skills at the start of the session before doing substantive work.
 
 ## MCP routing
 
-Select by the named target environment. If it is unspecified, ask before querying or changing anything.
+For environment-specific resources, select by the named target environment. If
+it is unspecified, ask before querying or changing those resources. Public
+documentation and web research are environment-neutral.
 
 **Hatch** resources: use only `aws-staging`, `aws-prod`, `kubernetes-staging-eks`, `kubernetes-prod-eks`, `argocd-staging-eks`, `argocd-prod-eks`, and `grafana`. `kubernetes-staging-eks` and `kubernetes-prod-eks` are fixed-context Kubernetes gateway entries, distinct from `makeitwork-kubernetes`; their OpenCode tools are named `<server>_<tool>` — for example `kubernetes-staging-eks_pods_list`. These are separate servers, so their tools are named `<server>_<tool>` with no extra prefix — Hatch Grafana is `grafana_query_prometheus`.
 
@@ -16,7 +52,29 @@ Select by the named target environment. If it is unspecified, ask before queryin
 
 **Environment-neutral** tooling also arrives through direct servers: `parallel-search_*` (web), `context7_*` (library docs), `aws-docs_*`, `terraform-docs_*`, `apify_*`, `playwright_*`, and `slidespeak_*`. `opentofu-docs` is a standalone server.
 
-Each integration is its own server entry again, so `mcp.<server>.enabled` can enable or disable it individually per project or profile — for example `mcp.apify.enabled` or `mcp.makeitwork-grafana.enabled`; the former aggregate `makeitwork` entry no longer exists. A project or profile can still deny one integration's tools instead: `"tools": { "apify_*": false }`.
+The checked-in `opencode.jsonc` currently uses compatible legacy configuration
+syntax and enables all 27 configured servers. A project or profile may restrict
+them. Check effective configuration and the live catalog rather than assuming
+that a configured server is connected, permitted, or healthy. Preserve the
+existing syntax unless a migration is requested; native V2 uses different server
+and permission shapes. The former aggregate `makeitwork` entry no longer exists.
+
+## Code Mode discovery and invocation
+
+- Names such as `parallel-search_web_search` are normalized permission names,
+  not necessarily callable paths. MCP tools in Code Mode are reached through
+  `execute`, not through the native shell or a context-mode subprocess.
+- Inside `execute`, discover the intended namespace with a bounded catalog
+  query, for example `search({ namespace: "parallel-search", limit: 2 })`.
+  Inspect the returned `path` and `signature`, then call that exact path with
+  its declared arguments. In this session that may be
+  `tools["parallel-search"].web_search(...)`; do not assume that path in another
+  client or invent flattened function names.
+- Catalog search discovers tools; it does not search the web or satisfy a
+  research task. Follow discovery with the selected tool call when evidence is
+  needed. Avoid broad catalog dumps, especially for large integrations.
+- If the client exposes native MCP tools instead, use the actual exposed names.
+  Neither discovery nor Code Mode grants permission to bypass approval gates.
 
 ## GitHub CI routing
 
@@ -24,14 +82,14 @@ Prefer the GitHub MCP Actions readers (`actions_list`, `actions_get`) for CI on 
 
 ## context-mode routing
 
-- Use `context-mode` whenever it is available to protect the context window.
+- Use `context-mode` when output reduction is needed. It governs output handling, not source selection; use the source-selection table first.
 - Do not use shell `curl` or `wget`, and do not make inline HTTP calls from shell commands.
-- For web pages, prefer `context-mode_ctx_fetch_and_index`, then `context-mode_ctx_search`.
-- For read-only HTTP or public API analysis that needs code, use `context-mode_ctx_execute` only under the execution-safety rules below. Its subprocess has full network access and is not a security boundary.
+- For substantial analysis of a known public page, prefer `context-mode_ctx_fetch_and_index`, then `context-mode_ctx_search`. Do not fetch pages again when the selected search tool's excerpts already answer the question.
+- Do not use `context-mode_ctx_execute` for HTTP calls or to invoke MCP tools. Keep network research on the selected documentation, search, or public-page fetch tool; subprocess execution is not a security boundary.
 - For read-only commands likely to produce more than about 20 lines of output, prefer `context-mode_ctx_batch_execute` or `context-mode_ctx_execute` over direct shell.
 - When reading files for analysis rather than editing, prefer `context-mode_ctx_execute_file`.
-- For broad search output, prefer sandboxed `context-mode` execution over dumping raw search results into context.
-- Tool selection order: `context-mode_ctx_batch_execute`, `context-mode_ctx_search`, `context-mode_ctx_execute` / `context-mode_ctx_execute_file`, `context-mode_ctx_fetch_and_index`, then `context-mode_ctx_index`.
+- For broad local search output, prefer context-mode output reduction over dumping raw grep results into context.
+- Within context-mode, choose the operation that fits: batch related local commands, search already indexed sources, execute local analysis, or fetch/index a known public page. This is not a web-search fallback sequence.
 
 ## context-mode execution safety
 
@@ -59,8 +117,8 @@ Prefer the GitHub MCP Actions readers (`actions_list`, `actions_get`) for CI on 
 - Prefer an existing supported hosted remote endpoint appropriate to the same target environment over the local gateway, and verify the exact endpoint in canonical config; do not construct a hostname. Retain the local gateway for workstation-local or environment-specific requirements, or where no suitable hosted equivalent exists. For those services, use an `mcp-gateway` `servers.json` entry on the next free 87xx localhost port and a POSIX `bin/<name>` wrapper when credentials are needed; client configs point at `http://127.0.0.1:<port>/mcp` (with `oauth: false` in OpenCode).
 - The thirteen direct Make IT Work Cloud entries are the established remote pattern, one per external endpoint at `https://mcp-<integration>.makeitwork.cloud/mcp`, with CF-Access headers from the environment: seven bare-named servers `apify`, `aws-docs`, `context7`, `parallel-search`, `playwright`, `slidespeak`, and `terraform-docs`, plus six prefixed names `makeitwork-argocd`, `makeitwork-aws`, `makeitwork-grafana`, `makeitwork-kubernetes`, `makeitwork-cloudflare`, and `makeitwork-gcp`. The first four are prefixed because bare `argocd`, `aws`, `grafana`, and `kubernetes` are taken by client integrations for other environments; the latter two are prefixed to make the Make IT Work Cloud scope explicit. These names target only Make IT Work Cloud resources, not other environments; the prefix is a naming distinction only, not a security boundary. The OAuth SaaS servers `linear` and `notion` are also established remote integrations. Do not add a second remote entry for a backend one of these direct endpoints already serves, and never inline a secret value — headers reference environment variables only.
 - Credentials for gateway wrappers come from `dotfiles` `encrypted_secrets.yaml.age` via `private_dot_shellenv.tmpl` (the `*_mcp_token` key convention); wrappers source `~/.shellenv` themselves. Secrets never appear in agent config repos.
-- Disable-by-default in the global `opencode.json` (`enabled: false`); projects opt in. Keep `opencode-llama` opted out of non-essential servers.
-- Project `opencode.json` files carry deltas only: configs deep-merge per server key, so an inherited server needs no project entry at all, `"name": { "enabled": true|false }` flips state, and full definitions (`type`/`url`/`command`) belong only to servers the global config does not define (e.g. a project-local stdio server).
+- New integrations should be disabled by default until explicitly approved. This does not describe the existing globally enabled set; do not silently disable it. Keep `opencode-llama` opted out of non-essential servers.
+- Project `opencode.json(c)` files should contain only intended overrides. Compare canonical global and project configuration first, use exact server keys and permission namespaces, and verify merge behavior against the active version before changing server definitions. Do not assume legacy and native V2 overrides merge identically.
 - After gateway changes, the gateway service must be restarted and agents reloaded before the tools appear; service restarts require explicit user confirmation.
 
 ## Persistent memory (opencode-mem)
@@ -76,35 +134,33 @@ Prefer the GitHub MCP Actions readers (`actions_list`, `actions_get`) for CI on 
 ## Codebase Memory routing
 
 - `codebase-memory` is a local, derived code-discovery index served by the gateway. Use it only for repositories below `~/git`, and index each repository explicitly rather than indexing the parent directory.
-- The global server definition is disabled. An intended project opts in with only `"codebase-memory": { "enabled": true }`; do not duplicate the server URL or transport definition.
+- The checked-in global server definition is enabled. Project restrictions and runtime availability can differ; inspect the live catalog and index status before relying on it. Do not create or refresh an index without the applicable confirmation.
 - Keep shared graph-artifact persistence disabled so repository source is not modified. The local index can be stale or incomplete; use GitHub MCP for exact file reads, remote branch heads, repository writes, and freshness-critical claims.
 - The server has no credentials or OAuth flow. Its index updates local derived state, so preserve the normal confirmation boundary for tool calls that are not purely read-only.
 
 ## apify routing
 
 - Apify (`apify_*` tools) is for structured marketplace and business-listing data that the free web tools cannot reach: Facebook Marketplace listings, Google Maps vendor/business discovery, and ecommerce price checks via `call-actor`. It arrives through its own direct `apify` server entry, so a project or profile can disable it via `mcp.apify.enabled`; keep the guardrail behavioural regardless: treat it as opt-in by judgement and fall back to the normal web stack unless the criteria below are met.
-- Apify is pay-per-event with real money and returns bulk datasets. It is the LAST resort, not a search tool: exhaust context-mode fetch/index, Context7, and parallel-search first. Reach for Apify only when the target is login-walled or anti-bot (Facebook Marketplace, Google Maps) or when structured listing records are the actual deliverable.
+- Apify is pay-per-event with real money and returns bulk datasets. It is the LAST resort, not the default search tool: use the applicable source-selection route first. Reach for Apify only when the target is login-walled or anti-bot (Facebook Marketplace, Google Maps) or when structured listing records are the actual deliverable.
 - Every Apify call must be tight: set result limits (`resultsLimit`/`maxItems`), price filters, and location radius up front. Unbounded actor runs waste money and can blow the context window with dataset dumps.
-- Prefer the pinned first-class tools (`facebook-marketplace-scraper`, `google-maps-scraper`) over `call-actor` discovery; use `search-actors`/`call-actor` only for actors not pinned in the config.
+- Prefer relevant first-class tools actually exposed by the live catalog. Do not assume a Google Maps scraper or any other actor is pinned. Otherwise use bounded `search-actors` discovery, inspect the actor's input schema, then use `call-actor` with explicit limits.
 - Never put credentials, private URLs, or personal account cookies into actor inputs. Searches go out as generic buyer/research queries only.
 
 ## parallel-search routing
 
-- `parallel-search_web_search` and
-  `parallel-search_web_fetch` are the fallback
-  for the open web. Lookup order: dedicated documentation MCPs, then Context7
-  for any library or framework documentation, then context-mode fetch/indexing
-  for known URLs, then parallel-search; prefer parallel-search over the
-  built-in `webfetch` and `google_search` tools when available.
+- parallel-search is the default for general public-web discovery, not a last
+  resort after context-mode. Follow the source-selection table and fallback
+  approval rule above; built-in `websearch` and `webfetch` are approval-gated.
 - Use `parallel-search_web_search` for general web discovery and current
   information — news, prices, listings, vendors, and similar open-web topics.
   "Current information" never includes library or framework documentation;
   that belongs to Context7 regardless of how the question is phrased. Search
   excerpts are usually sufficient; follow up with `parallel-search_web_fetch`
   only when excerpts are truncated, conflicting, or exact wording is required.
-- Use `parallel-search_web_fetch` for known public URLs when context-mode is
-  unavailable or direct retrieval is sufficient. Always pass URLs the user
-  provides via the `urls` parameter (up to 20 per request).
+- Use `parallel-search_web_fetch` for focused excerpts from known public URLs.
+  Use context-mode fetch/index for substantial page analysis instead; do not
+  call both by default. When using parallel-search fetch, pass user-provided
+  URLs via the `urls` parameter (up to 20 per request).
 - Generate one `session_id` per conversation (UUID or 32+ character hex) and
   reuse it for every parallel-search call; do not change it between turns.
 - Give each search call one atomic `objective` plus 2-3 concise related

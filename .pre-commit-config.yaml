@@ -23,7 +23,7 @@ repos:
         stages: [commit-msg]
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.38.2
+    rev: 0.39.0
     hooks:
       - id: check-jsonschema
         name: Validate OpenCode config against the upstream OpenCode schema
@@ -65,5 +65,19 @@ repos:
         entry: python -B -m unittest discover -s tests -p test_agent_frontmatter.py
         language: python
         additional_dependencies: [pyyaml]
+        pass_filenames: false
+        always_run: true
+      - id: check-mcp-routing
+        name: Validate MCP search routing source guards
+        entry: python -B scripts/check-mcp-routing.py
+        language: python
+        additional_dependencies: [json5==0.17.3]
+        pass_filenames: false
+        always_run: true
+      - id: test-mcp-routing
+        name: Test MCP routing guards and instruction consistency
+        entry: python -B -m unittest discover -s tests -p test_mcp_routing.py
+        language: python
+        additional_dependencies: [json5==0.17.3]
         pass_filenames: false
         always_run: true

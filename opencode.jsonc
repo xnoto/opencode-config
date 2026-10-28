@@ -228,8 +228,8 @@
     "makeitwork-argocd_get_resource_actions": "allow",
     "todoread": "allow",
     "todowrite": "allow",
-    "webfetch": "allow",
-    "websearch": "allow",
+    "webfetch": "ask",
+    "websearch": "ask",
     "makeitwork-kubernetes_*": "allow"
   },
   "agent": {
