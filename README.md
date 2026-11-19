@@ -25,17 +25,15 @@ Critical/High findings or obtain an explicit owner waiver. Verdicts never author
 merge, publication, deployment, installation, or live mutation. Models inherit the
 parent; no chart provider pins are imported.
 
-These native files are independently adapted from the roles in
+The seven specialist files were independently adapted from the roles in
 [opencode-server](https://github.com/makeitworkcloud/charts/tree/70c96e408c6bc0e04532a055c8558a38c2d861be/opencode-server/files/agents).
-Each config repository owns its copies; no generator or automatic synchronization
-was introduced. The source chart, MCP endpoints, packages, and primary model
-settings are unchanged.
+Each config repository owns its copies; there is no generator or automatic
+synchronization.
 
-`adversarial-code-reviewer` replaces `bullshit-detector`. The Claude primary
-agent has been removed; the remaining primary agents, `security-auditor`,
-`observability-debugger`, and provider-routing aliases are otherwise retained.
-The security auditor handles broader repository/chezmoi hygiene; the infrastructure
-reviewer assesses a supplied infrastructure diff.
+The security auditor handles broader repository/chezmoi hygiene without
+exposing raw scanner hits; the infrastructure reviewer assesses a supplied
+infrastructure diff. The observability debugger uses a separate read-only
+allowlist for named Hatch targets.
 
 ### Native permissions and compatibility
 
@@ -44,7 +42,8 @@ The new definitions target [OpenCode V2](https://opencode.ai/v2/docs/agents), wi
 resource. They have no model pin. They consume supplied evidence only and do not
 load skills or call tools, even when ambient instructions normally route to them.
 
-Remaining legacy definitions and `opencode.jsonc` are unchanged. V2 [supports legacy definitions](https://opencode.ai/v2/docs/migrate-v1);
+Some definitions and `opencode.jsonc` still use V2-compatible legacy syntax.
+V2 [supports legacy definitions](https://opencode.ai/v2/docs/migrate-v1);
 the new V2 permission shape must not be used with V1, which may ignore its denies.
 Installed client version and effective project overrides are separate verification
 gates, not facts established by this repository.
@@ -80,7 +79,7 @@ to that table. Built-in `websearch` and `webfetch` require approval as exception
 fallbacks rather than silently competing with parallel-search. The seven
 supplied-material reviewers remain tool-denied.
 
-The existing global server enablement is preserved. Enabled configuration is not
+Enabled configuration is not
 proof of connectivity, permissions, or endpoint health. The config retains its
 compatible legacy syntax; this change is not a native V2 migration.
 
@@ -108,10 +107,11 @@ test; those rows use supplied hypothetical scenarios until separately authorized
 | Find the latest React API documentation. | Context7 resolve, then docs query; no general web search |
 | Find AWS S3 documentation / Terraform provider docs / OpenTofu resource docs. | `aws-docs` / `terraform-docs` / `opentofu-docs`, respectively |
 | Explain an OpenCode configuration setting. | OpenCode skill, official V2 docs, relevant source validation |
-| Inspect a public repository's failing GitHub Actions run. | GitHub Actions readers, not web search or shell `gh` as the first route |
+| Inspect a failing Hatch1fy GitHub Actions run. | Hatch GitHub MCP Actions readers first; if unavailable or unable to access the run, disclose it and use `gh` under an authorized Hatch identity |
+| Fetch or push an approved `xnoto` or Make IT Work Cloud repository change. | `env -u GITHUB_TOKEN git ...`; use only an approved personal-account route for issues, PRs, and Actions |
 | Extract a focused passage from a known public URL. | parallel-search `web_fetch` with `urls`; no automatic second fetch |
 | Analyze a long known public page across several questions. | context-mode fetch/index, then indexed search |
-| Hypothetical: find a team decision or ticket. | Notion plus connector search for discussions / Linear for tickets; no public search |
+| Hypothetical: find a team decision or ticket. | Notion, the authorized discussions connector, or Linear when exposed; report missing connectors, no public search |
 | Hypothetical: check cluster health without naming an environment. | Clarify before any environment query |
 | Hypothetical: parallel-search is unavailable. | Disclose limitation and request approval before built-in fallback; do not bypass a deny |
 | Review a supplied diff using a supplied-material reviewer. | No tool calls or skill loading by that reviewer |
@@ -121,3 +121,10 @@ Repeat the checks for tool-capable provider aliases when evaluating model-specif
 compliance. Record configuration/version, selected agent, expected route, actual
 tool names, approval/disclosure behavior, and pass/fail without storing credentials
 or private payloads. Planning-only scenario responses are not live routing proof.
+
+## Presentation tooling
+
+The proprietary PowerPoint skill is not bundled. Use the presentation route in
+`AGENTS.md` or a separately authorized local skill; do not copy proprietary
+materials into this repository. Removing the tracked files does not rewrite Git
+history or change an existing installation.

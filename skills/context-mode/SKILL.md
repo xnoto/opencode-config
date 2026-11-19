@@ -16,7 +16,7 @@ Load this skill at the start of the session whenever the `skill` tool is availab
 - Keep HTTP calls and MCP invocation out of `context-mode_ctx_execute`; use the selected dedicated integration instead. Execution is for read-only local analysis, not a security sandbox.
 - For commands likely to exceed 20 lines of output, prefer `context-mode_ctx_batch_execute` or `context-mode_ctx_execute` over direct shell.
 - When reading files for analysis rather than editing, prefer `context-mode_ctx_execute_file`.
-- For broad search output, prefer sandboxed `context-mode` execution over dumping raw grep results.
+- For broad search output, use `context-mode` to bound returned results rather than dumping raw grep output.
 
 ## Choose an output-reduction operation
 
