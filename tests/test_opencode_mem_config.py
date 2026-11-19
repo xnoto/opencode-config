@@ -46,7 +46,7 @@ class MemoryConfigTests(unittest.TestCase):
     def repository_error(self, text):
         return f"{self.config_name} {text}"
 
-    def test_current_config_is_valid(self):
+    def test_valid_fixture_is_accepted(self):
         self.assertEqual(validator.validate_config(VALID_CONFIG, self.config_name), [])
         self.assertEqual(validator.validate_repository(self.root), [])
 
@@ -147,6 +147,22 @@ class MemoryConfigTests(unittest.TestCase):
                     [self.repository_error("must contain valid UTF-8 JSON/JSONC")],
                 )
 
+    def test_duplicate_keys_are_rejected_even_when_last_values_are_safe(self):
+        text = json.dumps(VALID_CONFIG)
+        for old, new in (
+            ('"autoCaptureEnabled": false', '"autoCaptureEnabled": "sensitive-placeholder", "autoCaptureEnabled": false'),
+            ('"compaction": {"enabled": false}', '"compaction": {"enabled": true, "enabled": false}'),
+        ):
+            with self.subTest(key=old):
+                self.assertIn(old, text)
+                duplicate = text.replace(old, new, 1)
+                self.assertEqual(json.loads(duplicate), VALID_CONFIG)
+                self.config_file.write_text(duplicate, encoding="utf-8")
+                self.assertEqual(
+                    validator.validate_repository(self.root),
+                    [self.repository_error("must contain valid UTF-8 JSON/JSONC")],
+                )
+
     def test_config_directory_is_rejected(self):
         self.config_file.unlink()
         self.config_file.mkdir()
@@ -218,17 +234,6 @@ class JsoncMemoryConfigTests(MemoryConfigTests):
         self.config_file.write_text("// reviewed config\n" + text[:-1] + ",}\n", encoding="utf-8")
         self.assertIn("autoCaptureEnabled must be False", validator.validate_repository(self.root))
 
-    def test_jsonc_duplicate_keys_top_level_and_nested_are_generic_errors(self):
-        for text in (
-            '{"storagePath":"first","storagePath":"second"}',
-            '{"memory":{"defaultScope":"project","defaultScope":"user"}}',
-        ):
-            with self.subTest(text=text):
-                self.config_file.write_text(text, encoding="utf-8")
-                errors = validator.validate_repository(self.root)
-                self.assertEqual(errors, [self.repository_error("must contain valid UTF-8 JSON/JSONC")])
-                self.assertNotIn("first", errors[0])
-
     def test_jsonc_malformed_forms_and_encoding_are_generic_errors(self):
         for text in (
             "[1,,]", '{"storagePath" "missing-colon"}', '{"unterminated: "value"}',
@@ -269,6 +274,11 @@ class JsoncMemoryConfigTests(MemoryConfigTests):
         with mock.patch.object(Path, "read_text", side_effect=AssertionError("read")):
             self.assertEqual(validator.validate_repository(self.root),
                              ["multiple opencode-mem config files are not allowed"])
+
+
+class RepositoryMemoryConfigTests(unittest.TestCase):
+    def test_current_repository_config_is_valid(self):
+        self.assertEqual(validator.validate_repository(REPO_ROOT), [])
 
 
 class StrictJsonMemoryConfigTests(MemoryConfigTests):

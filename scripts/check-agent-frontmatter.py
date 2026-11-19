@@ -2,8 +2,8 @@
 """Validate OpenCode agent definitions and config agent references.
 
 Checks every agents/*.md frontmatter against the documented OpenCode agent
-field set, and cross-checks opencode.json agent-related keys (default_agent,
-inline agent blocks, disabled built-ins) against the agents actually defined.
+field set, and cross-checks agent references in opencode.jsonc (or legacy
+opencode.json) against the agents actually defined.
 
 Runs from the repository root; intended for pre-commit and CI.
 """
@@ -12,11 +12,11 @@ import json
 import sys
 from pathlib import Path
 
+import json5
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 AGENTS_DIR = REPO_ROOT / "agents"
-CONFIG_FILE = REPO_ROOT / "opencode.json"
 
 ALLOWED_FRONTMATTER_KEYS = {
     "name",
@@ -165,17 +165,75 @@ def check_agent_file(path):
     }
 
 
-def load_config():
-    if not CONFIG_FILE.exists():
-        return {}
+def load_config(path):
     try:
-        return json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        fail("opencode.json", f"invalid JSON: {exc}")
+        text = path.read_text(encoding="utf-8")
+        if path.suffix == ".jsonc":
+            data = json5.loads(text, allow_duplicate_keys=False)
+        else:
+            data = json.loads(text)
+    except ValueError:
+        fail(path.name, "must contain valid UTF-8 JSON/JSONC")
         return {}
+    except OSError:
+        fail(path.name, "could not read config")
+        return {}
+    if not isinstance(data, dict):
+        fail(path.name, "config must be an object")
+        return {}
+    return data
+
+
+def check_config(agents):
+    # The repository's canonical config is JSONC. Fall back to JSON for older checkouts.
+    path = REPO_ROOT / "opencode.jsonc"
+    if not path.exists() and not path.is_symlink():
+        path = REPO_ROOT / "opencode.json"
+    if not path.exists() and not path.is_symlink():
+        fail("opencode.jsonc", "missing config (expected opencode.jsonc or opencode.json)")
+        return
+    location = path.name
+    config = load_config(path)
+
+    inline_agents = config.get("agent", {})
+    if not isinstance(inline_agents, dict):
+        fail(location, "agent must be an object keyed by agent name")
+        inline_agents = {}
+    for name, block in inline_agents.items():
+        if not isinstance(block, dict):
+            fail(location, f"agent {name!r} must be an object")
+
+    if "default_agent" not in config:
+        return
+    default_agent = config["default_agent"]
+    if not isinstance(default_agent, str) or not default_agent.strip():
+        fail(location, "default_agent must be a nonempty string")
+        return
+
+    block = inline_agents.get(default_agent, {})
+    if not isinstance(block, dict):
+        return  # Already reported above.
+    target = agents.get(default_agent)
+    if target is None and default_agent not in BUILTIN_PRIMARY_AGENTS and default_agent not in inline_agents:
+        fail(location, f"default_agent {default_agent!r} does not match any defined agent")
+        return
+    if target is None:
+        target = {
+            "mode": block.get("mode", "primary"),
+            "hidden": block.get("hidden"),
+            "disabled": block.get("disable"),
+        }
+    mode = target["mode"]
+    if mode not in ("primary", "all"):
+        fail(location, f"default_agent {default_agent!r} must be a primary-mode agent, got mode {mode!r}")
+    if target["hidden"]:
+        fail(location, f"default_agent {default_agent!r} must not be hidden")
+    if target["disabled"]:
+        fail(location, f"default_agent {default_agent!r} is disabled")
 
 
 def main():
+    errors.clear()
     agent_files = sorted(AGENTS_DIR.glob("*.md"))
     if not agent_files:
         fail("agents/", "no agent definition files found")
@@ -188,35 +246,7 @@ def main():
                 fail(path.relative_to(REPO_ROOT), f"duplicate agent name {info['name']!r}")
             agents[info["name"]] = info
 
-    config = load_config()
-    inline_agents = config.get("agent", {})
-    if not isinstance(inline_agents, dict):
-        fail("opencode.json", "agent must be an object keyed by agent name")
-        inline_agents = {}
-
-    disabled_builtins = {name for name, block in inline_agents.items() if isinstance(block, dict) and block.get("disable")}
-
-    default_agent = config.get("default_agent")
-    if default_agent:
-        target = agents.get(default_agent)
-        if target:
-            if target["mode"] not in ("primary", "all"):
-                fail("opencode.json", f"default_agent {default_agent!r} must be a primary-mode agent, got mode {target['mode']!r}")
-            if target["hidden"]:
-                fail("opencode.json", f"default_agent {default_agent!r} must not be hidden")
-            if target["disabled"]:
-                fail("opencode.json", f"default_agent {default_agent!r} is disabled")
-        elif default_agent in BUILTIN_PRIMARY_AGENTS and default_agent not in disabled_builtins:
-            pass
-        elif default_agent in inline_agents and not default_agent in disabled_builtins:
-            block = inline_agents[default_agent]
-            mode = block.get("mode", "primary") if isinstance(block, dict) else "primary"
-            if mode not in ("primary", "all"):
-                fail("opencode.json", f"default_agent {default_agent!r} must be a primary-mode agent, got mode {mode!r}")
-            if isinstance(block, dict) and block.get("hidden"):
-                fail("opencode.json", f"default_agent {default_agent!r} must not be hidden")
-        else:
-            fail("opencode.json", f"default_agent {default_agent!r} does not match any defined agent")
+    check_config(agents)
 
     if errors:
         print("Agent definition validation failed:", file=sys.stderr)

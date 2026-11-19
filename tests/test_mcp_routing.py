@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import json5
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SPEC = importlib.util.spec_from_file_location(
     "check_mcp_routing", REPO_ROOT / "scripts/check-mcp-routing.py"
@@ -27,6 +29,24 @@ VALID_CONFIG = {
 class RoutingConfigTests(unittest.TestCase):
     def test_current_repository(self):
         self.assertEqual(validator.validate_repository(REPO_ROOT), [])
+
+    def test_makeitwork_kubernetes_only_auto_approves_explicit_read_tools(self):
+        config = json5.loads(
+            (REPO_ROOT / "opencode.jsonc").read_text(encoding="utf-8"),
+            allow_duplicate_keys=False,
+        )
+        prefix = "makeitwork-kubernetes_"
+        permissions = config["permission"]
+        allowed = {prefix + name for name in (
+            "events_list", "namespaces_list", "pods_get", "pods_list_in_namespace", "pods_log", "pods_top",
+        )}
+        self.assertEqual({key for key, rule in permissions.items() if key.startswith(prefix) and rule == "allow"}, allowed)
+        for tool in sorted(allowed):
+            with self.subTest(tool=tool):
+                self.assertEqual(validator.effective_permission(permissions, tool), "allow")
+        for name in ("kubectl_apply", "kubectl_delete", "kubectl_exec", "unlisted_future_tool"):
+            with self.subTest(tool=name):
+                self.assertEqual(validator.effective_permission(permissions, prefix + name), "ask")
 
     def test_valid_guards(self):
         self.assertEqual(validator.validate_config(VALID_CONFIG), [])
@@ -109,6 +129,38 @@ class RoutingConfigTests(unittest.TestCase):
 
 
 class RoutingInstructionTests(unittest.TestCase):
+    def test_git_credential_routing_separates_hatch_and_personal_repositories(self):
+        text = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        heading = "## GitHub and Git credential routing"
+        self.assertIn(heading, text)
+        section = text.split(heading, 1)[1].split("\n## ", 1)[0]
+        self.assertIn("`github` MCP for `Hatch1fy`", section)
+        self.assertIn("`actions_list` and `actions_get`", section)
+        self.assertIn("`makeitwork` and `xnoto`", section)
+        self.assertIn("`env -u GITHUB_TOKEN git ...`", section)
+        self.assertIn("Do not use the Hatch MCP", section)
+        self.assertIn("Verify the target owner and remote", section)
+        self.assertIn("use Git or `gh` with an authorized", section)
+
+    def test_transport_failure_allows_an_authorized_fallback(self):
+        text = " ".join((REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8").split())
+        self.assertIn("use an alternate authorized transport for the same target", text)
+        self.assertIn("explicit denial of the operation itself", text)
+        self.assertNotIn("A denied tool is not permission to try another transport", text)
+
+    def test_personal_agents_follow_the_git_credential_route(self):
+        for name in ("makeitwork", "xnoto"):
+            with self.subTest(agent=name):
+                text = (REPO_ROOT / "agents" / f"{name}.md").read_text(encoding="utf-8")
+                heading = "## Scope and Repo Classification"
+                self.assertIn(heading, text)
+                section = " ".join(text.split(heading, 1)[1].split("\n## ", 1)[0].split())
+                self.assertIn("run Git as `env -u GITHUB_TOKEN git ...`", section)
+                self.assertIn("Hatch-scoped `github` MCP are for `Hatch1fy`, not these repositories", section)
+                self.assertIn("Verify the remote owner first", section)
+                self.assertIn("rather than retrying with Hatch credentials", section)
+                self.assertIn("approval requirements for commits and pushes", section)
+
     def test_source_selection_table_retains_dedicated_routes(self):
         text = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
         table = text.split("## Source selection (all tool-capable agents)", 1)[1]

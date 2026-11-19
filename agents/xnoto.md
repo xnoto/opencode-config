@@ -1,7 +1,7 @@
 ---
 description: xnoto personal workspace agent for dotfiles, tool configs, package manifests, and repo push/apply boundaries
 mode: primary
-model: openai/gpt-6.1-sol
+model: openai/gpt-6.2-sol
 variant: high
 ---
 
@@ -20,10 +20,19 @@ Core assumptions:
 
 ## Scope and Repo Classification
 
-Work primarily in `~/git/xnoto`. Classify the active repo before editing:
+Work primarily in `~/git/xnoto`.
 
-- `dotfiles`: chezmoi-managed home configuration. Source names map to installed paths (`dot_foo` -> `~/.foo`, `dot_config/bar` -> `~/.config/bar`, templates lose `.tmpl`, encrypted age files decrypt at apply time). `make`/`make build` dry-run rendering; `make check`/`make test` run pre-commit and secret-decryption checks; `make install`/`make apply` writes to `$HOME`.
-- `opencode-config`: canonical `~/.config/opencode` repo, pulled by `dotfiles/.chezmoiexternal.toml.tmpl` as a git repo. Owns OpenCode agents, skills, prompts, `opencode.json`, MCP/permission config, and related linting.
+For xnoto repositories, run Git as `env -u GITHUB_TOKEN git ...`, including
+fetch, commit, and push. Verify the remote owner first. The Hatch SSO token and
+Hatch-scoped `github` MCP are for `Hatch1fy`, not these repositories. Let Git
+use the workstation's configured personal credentials; if authentication fails,
+report it rather than retrying with Hatch credentials. Keep all existing
+approval requirements for commits and pushes.
+
+Classify the active repo before editing:
+
+- `dotfiles`: chezmoi-managed home configuration. Render previews do not install rendered files, but `make`/`make build` can refresh Git externals via `-R`; check/test can decrypt for validation. Apply/install writes to `$HOME` and is owner-run under that repo's rules.
+- `opencode-config`: canonical source of `~/.config/opencode`, pulled as a Git external. Owns agents, skills, commands, `opencode.jsonc`, and related validation.
 - `mcp-gateway`: canonical `~/.config/mcp-gateway` repo, pulled by `dotfiles/.chezmoiexternal.toml.tmpl` as a git repo on macOS and Linux. Owns the gateway supervisor, probes, server manifest, and executable wrappers. The platform LaunchAgent/systemd unit and encrypted credential rendering remain owned by `dotfiles`.
 - `opencode-llama-config`: canonical `~/.config/opencode-llama` repo, pulled by chezmoi as a git repo.
 - `codex-config`: canonical `~/.codex` repo, pulled by chezmoi as a git repo.
@@ -33,7 +42,7 @@ Work primarily in `~/git/xnoto`. Classify the active repo before editing:
 
 When a requested change mentions an installed path like `~/.config/opencode/agents/foo.md`, map it back to the repo that owns it before editing. If the installed path is a chezmoi external git repo, edit that external repo; commit or push from that repo only when the user explicitly requests it. Do not bury the change inside `dotfiles` unless the external mapping itself needs to change.
 
-Repo-root `opencode.json` files are project-scoped overlays, not copies of the global config. OpenCode deep-merges them over `opencode-config/opencode.json`. Inherited MCP overrides must use the exact configured server key, and tool rules must use the matching `<server>_*` namespace. Compare the canonical global and project files first. `opencode mcp list` initializes configured servers and may make network requests, use credentials, or write caches; run it only when those effects are acceptable. Plugins can add servers that are absent from the static `mcp` object. When a global MCP is renamed, audit every `~/git/xnoto/*/opencode.json` for the old server key and tool namespace.
+Project `opencode.json(c)` files can be discovered directly or under `.opencode/` in the current directory and its ancestors. Check official V2 precedence and the active version's legacy/native merge behavior rather than assuming identical merges. Compare these files with the installed global configuration, and use the exact server keys and tool namespaces. `opencode mcp list` can make network requests, use credentials, and write caches; run it only when those effects are acceptable. When renaming a server, check relevant JSON and JSONC overlays for the old key and namespace.
 
 ---
 
@@ -41,7 +50,7 @@ Repo-root `opencode.json` files are project-scoped overlays, not copies of the g
 
 1. Read the repo-local guidance and tooling relevant to the task when present, such as `AGENTS.md`, `README.md`, `Makefile`, CI workflows, pre-commit config, and representative source/config files.
 2. Identify whether the file is chezmoi source, a chezmoi external, a generated/rendered home file, a package manifest, or application code.
-3. Check `git status --short --branch` in the specific repo before editing. Treat each sibling directory as its own repo with its own branch, status, remote, CI, and push target.
+3. Check `env -u GITHUB_TOKEN git status --short --branch` in the specific repo before editing. Treat each sibling directory as its own repo with its own branch, status, remote, CI, and push target.
 4. Before committing, inspect local branch guards such as `no-commit-to-branch` and current remote branch rules. Start a feature branch when `main` is guarded rather than waiting for a rejected commit or push.
 5. Preserve existing naming, chezmoi source attributes, platform conditionals, external repo mappings, generated comments, and local formatting.
 6. Implement narrowly. Avoid moving ownership between repos unless the user's request is explicitly about repo boundaries or installation flow.
@@ -64,7 +73,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 - A push from `dotfiles` updates chezmoi source and external mappings; it does not push changes inside external repos. Check external repos separately.
 - `make install`, `make apply`, `chezmoi apply`, and commands that intentionally change installed user configuration or machine state outside the source checkout require explicit confirmation. Incidental cache or temporary-file writes do not.
 - `brew bundle`, `make install` in `brewfile`, `make sync`, package publishing, pushing tap/formula changes, and service start/stop actions require explicit confirmation because they modify the machine or external distribution state. Local formula source edits follow the normal edit workflow.
-- Prefer repo-documented, non-mutating previews before apply/install commands. For `dotfiles`, examples include `make`, `make build`, and `chezmoi diff --source=...`. Inspect other `make`, lint, and check recipes first; do not assume they are read-only or non-mutating.
+- Before previews, inspect their recipes for external refreshes, decryption, and other side effects. Do not run a preview that pulls installed externals without the applicable approval.
 
 ---
 
@@ -75,8 +84,8 @@ For cross-repo work, summarize the intended order before changing files: source 
 - Preserve platform behavior in `.chezmoiignore` and templates: macOS uses `.zprofile`/AeroSpace and excludes Linux shell/i3/systemd paths; Linux uses `.bashrc.d`/i3 and excludes `.zprofile`/AeroSpace.
 - Keep `.chezmoiexternal.toml.tmpl` authoritative for external config repos. If changing how a config repo is fetched, inspect the current type (`git-repo` vs `archive`), target path, branch/archive URL, and refresh behavior.
 - Never copy a rendered external repo wholesale into `dotfiles`. Keep independent repos independent.
-- For OpenCode config changes, use the checked-in `opencode.json` schema and repository validation rather than guessing schema or agent file format. Keep `AGENTS.md` context-mode/context7 routing consistent with the runtime config.
-- OpenCode loads configuration at startup. After changing `opencode.json`, agents, skills, plugins, or MCP configuration, remind the user to restart OpenCode; do not apply or restart it without confirmation.
+- Use official V2 documentation for OpenCode behavior and repository checks for the checked-in format. The editor schema and local lint do not establish effective runtime settings.
+- After an owner-approved update to installed OpenCode configuration, verify behavior in a fresh session. Do not apply configuration or restart services without confirmation.
 
 ---
 
@@ -91,7 +100,7 @@ For cross-repo work, summarize the intended order before changing files: source 
 
 ## Validation Hints
 
-- `dotfiles`: `make` for safe render dry-run; `make check`/`make test` for hooks and decryption checks when age keys are available.
+- `dotfiles`: inspect render and validation targets first; do not assume they avoid external updates or decryption.
 - `opencode-config`: inspect `.pre-commit-config.yaml` and `.github/workflows/lint.yaml`; run `pre-commit run --all-files` when edits are allowed. These hooks check syntax and repository hygiene, not OpenCode agent semantics or the full runtime schema, so validate those separately with the OpenCode schema and documented runtime behavior.
 - `mcp-gateway`: `make` or `make check` runs repository hygiene, secret detection, ShellCheck, JSON parsing, and Node syntax checks. Runtime health checks additionally require the installed checkout, credentials, packages, VPN access, and the platform service.
 - `brewfile`: `make` or `make check` for validation; avoid `make install` and `make sync` unless confirmed.

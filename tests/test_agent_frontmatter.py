@@ -1,4 +1,7 @@
+import contextlib
 import importlib.util
+import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -98,6 +101,94 @@ class PermissionTests(unittest.TestCase):
     def test_both_formats_rejected(self):
         errors = self.check(permission="deny", permissions=DENY_ALL)
         self.assertTrue(any("use one format" in error for error in errors), errors)
+
+
+class AgentConfigTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.root = Path(temp.name)
+        self.agents = self.root / "agents"
+        self.agents.mkdir()
+        for name, fields in {
+            "primary": {"mode": "primary"},
+            "reviewer": {"mode": "subagent"},
+            "hidden": {"mode": "primary", "hidden": True},
+            "disabled": {"mode": "primary", "disable": True},
+        }.items():
+            data = {"description": "Test agent", **fields}
+            (self.agents / f"{name}.md").write_text(
+                "---\n" + yaml.safe_dump(data) + "---\n", encoding="utf-8"
+            )
+        self.addCleanup(validator.errors.clear)
+
+    def run_validator(self):
+        stderr = io.StringIO()
+        with mock.patch.multiple(validator, REPO_ROOT=self.root, AGENTS_DIR=self.agents):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
+                status = validator.main()
+        return status, stderr.getvalue()
+
+    def test_jsonc_is_checked_even_with_valid_legacy_json(self):
+        (self.root / "opencode.json").write_text('{"default_agent":"primary"}', encoding="utf-8")
+        path = self.root / "opencode.jsonc"
+        path.write_text('// tracked config\n{"default_agent":"missing",}\n', encoding="utf-8")
+        status, stderr = self.run_validator()
+        self.assertEqual(status, 1)
+        self.assertIn("opencode.jsonc: default_agent 'missing' does not match", stderr)
+        path.write_text('// tracked config\n{"default_agent":"primary",}\n', encoding="utf-8")
+        self.assertEqual(self.run_validator(), (0, ""))
+
+    def test_legacy_json_is_checked_and_keeps_strict_syntax(self):
+        path = self.root / "opencode.json"
+        for text, expected in (
+            ('{"default_agent":"primary"}', None),
+            ('{"default_agent":"missing"}', "default_agent 'missing' does not match"),
+            ('{"default_agent":"primary",}', "must contain valid UTF-8 JSON/JSONC"),
+        ):
+            with self.subTest(text=text):
+                path.write_text(text, encoding="utf-8")
+                status, stderr = self.run_validator()
+                self.assertEqual(status, int(expected is not None))
+                if expected is not None:
+                    self.assertIn(f"opencode.json: {expected}", stderr)
+
+    def test_default_agent_must_be_selectable(self):
+        path = self.root / "opencode.jsonc"
+        for default, inline, expected in (
+            ("reviewer", {}, "must be a primary-mode agent"),
+            ("hidden", {}, "must not be hidden"),
+            ("disabled", {}, "is disabled"),
+            ("plan", {"plan": {"disable": True}}, "is disabled"),
+            ("inline", {"inline": {"mode": "subagent"}}, "must be a primary-mode agent"),
+            ("inline", {"inline": False}, "must be an object"),
+            ("build", {}, None),
+            ("inline", {"inline": {"mode": "primary"}}, None),
+        ):
+            with self.subTest(default=default, inline=inline):
+                path.write_text(json.dumps({"default_agent": default, "agent": inline}), encoding="utf-8")
+                status, stderr = self.run_validator()
+                self.assertEqual(status, int(expected is not None))
+                if expected is not None:
+                    self.assertIn(expected, stderr)
+
+    def test_missing_and_malformed_configs_fail_cleanly(self):
+        path = self.root / "opencode.jsonc"
+        for text, expected in (
+            (None, "missing config"),
+            (b"{", "must contain valid UTF-8 JSON/JSONC"),
+            (b"\xff", "must contain valid UTF-8 JSON/JSONC"),
+            (b'{"agent": {}, "agent": {}}', "must contain valid UTF-8 JSON/JSONC"),
+            (b"[]", "config must be an object"),
+            (b'{"agent": []}', "agent must be an object"),
+            (b'{"default_agent": []}', "default_agent must be a nonempty string"),
+        ):
+            with self.subTest(text=text):
+                if text is not None:
+                    path.write_bytes(text)
+                status, stderr = self.run_validator()
+                self.assertEqual(status, 1)
+                self.assertIn(f"opencode.jsonc: {expected}", stderr)
 
 
 class SpecialistRosterTests(unittest.TestCase):

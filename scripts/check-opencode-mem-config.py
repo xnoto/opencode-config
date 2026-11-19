@@ -58,6 +58,15 @@ def validate_config(config, config_name="opencode-mem config"):
     return errors
 
 
+def reject_duplicate_keys(pairs):
+    config = {}
+    for key, value in pairs:
+        if key in config:
+            raise ValueError("duplicate key")
+        config[key] = value
+    return config
+
+
 def validate_repository(repo_root):
     errors = []
     for relative_path in FORBIDDEN_CONFIG_PATHS:
@@ -84,8 +93,8 @@ def validate_repository(repo_root):
         if config_file.suffix == ".jsonc":
             config = json5.loads(text, allow_duplicate_keys=False)
         else:
-            config = json.loads(text)
-    except (json.JSONDecodeError, ValueError, UnicodeError):
+            config = json.loads(text, object_pairs_hook=reject_duplicate_keys)
+    except ValueError:
         errors.append(f"{config_name} must contain valid UTF-8 JSON/JSONC")
     except OSError:
         errors.append(f"could not read {config_name}")

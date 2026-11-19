@@ -43,7 +43,7 @@ repos:
         name: Validate OpenCode agent definitions
         entry: python3 scripts/check-agent-frontmatter.py
         language: python
-        additional_dependencies: [pyyaml]
+        additional_dependencies: [PyYAML==6.0.3, json5==0.17.3]
         pass_filenames: false
         always_run: true
       - id: check-opencode-mem-config
@@ -64,7 +64,7 @@ repos:
         name: Test agent frontmatter and specialist roster
         entry: python -B -m unittest discover -s tests -p test_agent_frontmatter.py
         language: python
-        additional_dependencies: [pyyaml]
+        additional_dependencies: [PyYAML==6.0.3, json5==0.17.3]
         pass_filenames: false
         always_run: true
       - id: check-mcp-routing

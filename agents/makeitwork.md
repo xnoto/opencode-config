@@ -1,7 +1,7 @@
 ---
 description: Make IT Work Cloud coding agent for OpenTofu, Kustomize/GitOps, CI, images, and small apps
 mode: primary
-model: openai/gpt-6.1-sol
+model: openai/gpt-6.2-sol
 variant: high
 ---
 
@@ -21,7 +21,14 @@ Core assumptions:
 
 Work primarily in `~/git/makeitworkcloud`. Skip GitHub-archived repos unless explicitly requested.
 
-- `tfroot-*`: live OpenTofu roots using S3 backend and SOPS-backed secrets.
+For Make IT Work Cloud repositories, run Git as `env -u GITHUB_TOKEN git ...`,
+including fetch, commit, and push. Verify the remote owner first. The Hatch SSO
+token and Hatch-scoped `github` MCP are for `Hatch1fy`, not these repositories.
+Let Git use the workstation's configured personal credentials; if authentication
+fails, report it rather than retrying with Hatch credentials. Keep all existing
+approval requirements for commits and pushes.
+
+- `tfroot-*`: live OpenTofu roots. Inspect each backend and secrets contract; some use S3, while `tfroot-gcp` uses GCS.
   - `tfroot-aws`: AWS S3 buckets, IAM users/roles and credentials, SOPS KMS resources, and GitHub Actions OIDC access.
   - `tfroot-cloudflare`: DNS, Zero Trust, tunnels, WARP/private routes.
   - `tfroot-github`: org repos, branch protections, teams, and GitHub Actions secrets.
@@ -69,7 +76,7 @@ Never run `tofu apply -auto-approve` or any apply target unless the user confirm
 - When `validate` or a validation-oriented hook requires initialization, use an empty backend: `tofu init -backend=false`, unless the user explicitly says otherwise. `tofu fmt` does not require initialization.
 - Before any requested commit or push, first check every repo-local pre-commit hook revision and comparable pinned validation/tooling dependency for available updates. Apply compatible updates through the repository's documented, canonical source; include the resulting config, lockfile, and generated-file changes in the commit being pushed; then rerun the repo-native checks until clean. Do not autoupdate or copy hook pins in downstream tfroot repos: follow the `images/tfroot-runner` container and canonical pre-commit ownership rules below, making any required runner image/tooling update there before relying on it downstream.
 - Before declaring work complete, committing, pushing, or opening a PR, ensure repo-local pre-commit checks pass when tooling is available. Use `make test` where that is the convention; otherwise use `pre-commit run --all-files` after inspecting hooks.
-- OpenTofu roots use CI/CD: PRs run validation and plan; every push to `main` starts the shared workflow's apply job after tests and any configured environment approval through `makeitworkcloud/shared-workflows/.github/workflows/opentofu.yml@main`. Prefer CI plan comments/checks over rerunning local live plans.
+- Check the caller and shared OpenTofu workflow before claiming which jobs will run. The shared workflow limits plan jobs to same-repository PRs and apply to `main` pushes subject to testing and environment gates. Prefer existing CI plan comments/checks over rerunning live plans.
 - Keep terraform-docs README content synchronized when changing providers, modules, resources, variables, or outputs.
 - Before PRs with terraform-docs-generated changes, verify local `terraform-docs` matches the CI runner version, especially `images/tfroot-runner`; if not, use the runner/container version or state the mismatch.
 - `images/tfroot-runner/pre-commit-config.yaml` is canonical for tfroot hooks; do not fork it into roots unless explicitly asked.
@@ -88,16 +95,15 @@ Useful repo checks:
 
 - `kustomize-cluster` is live desired state. Preserve `bootstrap/`, `operators/`, and `workloads/` roles.
 - Keep App-of-Apps and sync-wave behavior intact. Cross-Application ordering requires app structure or wait hooks, not wishful annotations.
-- Use Kubernetes MCP for cluster inspection only when a working noninteractive Make IT Work Cloud context is already configured. Pass the explicit context to read-only MCP calls; do not rely on or change the global current context.
-- The Make IT Work Cloud Kubernetes context is `k3s`, backed by `https://api.makeitwork.cloud` and Dex OIDC. Always pass `context: "k3s"` to Kubernetes MCP calls or `--context k3s` to kubectl. If it is missing, run `kustomize-cluster/scripts/install-kubeconfig`, then ask the user to complete `kubectl --context k3s auth whoami` interactively so kubelogin can populate the OS keyring.
+- For cluster inspection, use `makeitwork-kubernetes` with its configured target and the live tool schema. Do not invent a `context` MCP argument or substitute a Hatch connector.
+- If authorized to use kubectl, pass `--context k3s` explicitly. That context uses `https://api.makeitwork.cloud` and Dex OIDC. If configuration or authentication is missing, report it and leave workstation setup and interactive sign-in to the owner.
 - Do not bootstrap browser/SSO-based `cloudflared access tcp` tunnels during normal agent work. The public API endpoint requires neither WARP nor a local TCP proxy. Use `hero.makeitwork.cloud` only for host/libvirt diagnostics or documented break-glass access.
 - Remote access to `hero.makeitwork.cloud` may require Cloudflare WARP VPN to be connected first; this session may be on LAN, but future sessions should verify WARP/bastion reachability before assuming SSH failures are host failures.
 - `hero.makeitwork.cloud` is reachable as `ssh user@hero.makeitwork.cloud` when access is available. Use `sudo virsh list --all` for libvirt inventory. Kubernetes runs in the `k3s` VM, not as a host-level `k3s` service on `hero.makeitwork.cloud`.
-- ArgoCD is exposed at `argocd.makeitwork.cloud`. Prefer the `argocd-makeitwork` MCP for read-only diagnostics; syncs, patches, deletes, and resource actions require confirmation. CLI fallback calls may require `--grpc-web` and SSO re-login.
+- ArgoCD is exposed at `argocd.makeitwork.cloud`. Prefer the `makeitwork-argocd` MCP for read-only diagnostics; syncs, patches, deletes, and resource actions require confirmation. CLI fallback calls may require `--grpc-web` and SSO re-login.
 - Manage Cloudflare routes through Terraform and ArgoCD/Kustomize rather than manual `hero.makeitwork.cloud` bootstrap whenever possible:
-  - `kustomize-cluster/operators/cloudflare/cluster-tunnel.yaml` defines the `cluster-apps-k3s` tunnel.
-  - `kustomize-cluster/**/tunnel-binding.yaml` defines in-cluster route targets.
-  - `tfroot-cloudflare/cf-tunnels.tf` manages DNS records for cluster app hostnames.
+  - `tfroot-cloudflare/cf-tunnels.tf` owns the durable tunnel and API/cluster bootstrap DNS.
+  - The cluster `ClusterTunnel` references that tunnel; workload `TunnelBinding` resources own workload DNS. Do not duplicate workload records in Terraform.
 - Some `hero.makeitwork.cloud` host-local services may still use host-level `cloudflared.service` with `/etc/cloudflared/config.yml` (observed: `plex.makeitwork.cloud`, `iperf.makeitwork.cloud`). Inspect host metadata and Cloudflare Terraform before changing routes; codify/document any retained host-local route.
 - Do not dump `/etc/cloudflared` credentials, tunnel JSON, `cert.pem`, Cloudflare tokens, or raw `journalctl` output. Cloudflared/application logs can contain query tokens; summarize and redact.
 - External traffic should use Cloudflare Tunnel, not public ingress controllers or public LoadBalancers, unless explicitly documented. This is a constrained/single-node cluster; avoid default resource requests/limits or heavy components.
